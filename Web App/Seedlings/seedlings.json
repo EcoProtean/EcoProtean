@@ -1,0 +1,63 @@
+[
+  {
+      "title1": "Seedling- 1",
+      "title2": "Narra",
+      "description": "It is the national tree of the Philippines, renowned for its sturdy, durable wood and vibrant yellow flowers. It is commonly used in furniture making due to its strength and resilience. Narra thrives in tropical climates with ample rainfall and has a deep, extensive root system that provides strong anchorage. It is a relatively fast-growing tree, especially when planted in fertile soil, making it an excellent choice for shade, timber, and ornamental use.",
+      "sources": "",
+      "imageUrl": "../Seedling Photo/narraseedling.jpg"
+  },
+  {
+      "title1": "Seedling- 2",
+      "title2": "Acacia",
+      "description": "It is a fast-growing tree ideal for reforestation projects due to its ability to improve soil fertility by fixing nitrogen. It has a dense canopy that provides good shade and thrives in tropical and subtropical climates, displaying drought resistance. Its strong root system stabilizes the soil, making it useful for erosion control. Acacia grows rapidly, particularly in areas with ample sunlight, and is often used for timber, reforestation, and shade.",
+      "imageUrl": "../Seedling Photo/acacia.jpg"
+  },
+  {
+      "title1": "Seedling- 3",
+      "title2": "Mahogany",
+      "description": "It is a tall hardwood tree known for its prized reddish-brown wood, widely used in fine furniture and cabinetry. It has a broad canopy that provides significant shade and thrives in tropical regions with warm, humid climates. Mahogany develops deep, extensive roots that help stabilize the soil, and it is a fast-growing tree when planted in fertile, well-drained soils. It is primarily grown for timber, but also serves as an excellent shade tree.",
+      "imageUrl": "../Seedling Photo/mahogany.jpg"
+  },
+  {
+      "title1": "Seedling- 4",
+      "title2": "Mango ",
+      "description": "It is highly valued for its sweet, juicy fruit and wide, dense canopy that provides excellent shade. It prefers warm tropical climates, flourishing in areas with minimal frost and plenty of sunshine. The mango tree develops a strong taproot that helps it withstand dry conditions, and it grows moderately to quickly, typically producing fruit within 3-5 years. It is mainly cultivated for its fruit, though its shade and ornamental value also make it a popular choice.",
+      "imageUrl": "../Seedling Photo/mango.jpg"
+  },
+  {
+    "title1": "Seedling- 5",
+      "title2": "Molave",
+      "description": "It is a native hardwood tree of the Philippines, known for its tough and durable wood. It thrives in both dry and moist tropical environments and has a deep, robust root system that anchors it well in various soil conditions. Although it grows slowly at first, its growth rate picks up as the tree matures, making it a favored choice for timber production and reforestation projects.",
+      "imageUrl": "../Seedling Photo/molave.jpg"
+  },
+  {
+   "title1": "Seedling- 6",
+      "title2": "Gmelina ",
+      "description": "It is a fast-growing tree used primarily for timber due to its light-colored wood, which is valued in construction, paper-making, and fuelwood. It thrives in tropical climates with good rainfall and develops a strong root system that stabilizes the soil, making it suitable for erosion control. Gmelina grows rapidly and reaches maturity in just a few years, making it ideal for reforestation and commercial timber production.",
+      "imageUrl": "../Seedling Photo/gmelina.jpg"
+  },
+  {
+   "title1": "Seedling- 7",
+      "title2": "Bamboo",
+      "description": "It is technically a fast-growing grass, but certain species can grow as tall as trees, making it highly versatile. Bamboo thrives in tropical climates with abundant rainfall and has an expansive root system that helps stabilize soil and prevent erosion. It is one of the fastest-growing plants, capable of growing several feet in a day, and is widely used in construction, furniture making, and crafts due to its strength and flexibility. Bamboo is also an effective windbreak and can be used for reforestation.",
+      "imageUrl": "../Seedling Photo/bamboo.jpg"
+  },
+  {
+   "title1": "Seedling- 8",
+      "title2": "Ipil-Ipil",
+      "description": "It is a nitrogen-fixing tree that improves soil fertility and is often used for fuelwood, fodder, and reforestation. It thrives in tropical and subtropical regions and is drought-tolerant, making it suitable for a variety of environments. Ipil-Ipil has strong, nitrogen-fixing roots that enrich the soil and allow the tree to grow quickly, making it an ideal choice for biomass production, erosion control, and improving degraded land.",
+      "imageUrl": "../Seedling Photo/ipilipil.avif"
+  },
+  {
+   "title1": "Seedling- 9",
+      "title2": "Banaba",
+      "description": "is a flowering tree known for its striking purple blooms and medicinal properties, particularly for managing diabetes. It grows well in tropical climates with moist soils and has a strong, spreading root system that helps it withstand strong winds. Banaba is fast-growing, especially in areas with sufficient moisture, and is commonly used in ornamental landscaping, medicinal applications, and as a shade tree due to its wide canopy.",
+      "imageUrl": "../Seedling Photo/banaba_800x.jpg"
+  },
+  {
+   "title1": "Seedling- 10",
+      "title2": "Talisay",
+      "description": "It is also known as the Indian almond, is a large tree with a broad, spreading canopy that provides excellent shade. Its leaves turn red before they fall, making it a visually appealing ornamental tree. Talisay is well-suited to tropical coastal areas, as it has strong, deep roots that help it resist winds and prevent soil erosion. It grows moderately fast and is commonly used for shade, ornamental purposes, and erosion control in coastal environments.",
+      "imageUrl": "../Seedling Photo/talisay.jpg"
+  }
+]
