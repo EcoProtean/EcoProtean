@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - EcoProteous</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #b1caff;
+            position: relative;
+            height: 110vh;
+            background: linear-gradient(135deg,
+                    #205468 5%,
+                    #256e68 25%,
+                    #2f7874 50%,
+                    #29716f 75%,
+                    #1e4b5d 100%);
+            background-size: 200% 200%;
+            animation: gradientAnimation 15s ease infinite;
+        }
+
+        /* Shapes styling */
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape1 {
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.2);
+            top: 10%;
+            left: 15%;
+        }
+
+        .shape2 {
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.2);
+            top: 50%;
+            right: 10%;
+        }
+
+        .shape3 {
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.2);
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-60px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        /* Header Styling */
+        header {
+            background-color: rgba(51, 51, 51, 0.354);
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        nav .logo img {
+            height: 40px;
+            margin-right: 20px;
+            border-radius: 100%;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: #1b9e9b;
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 70px;
+            height: 85vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-content {
+            max-width: 1000px;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        /* Form Styling */
+        .form-container {
+            background-color: #FFFFFF;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #D9D9D9;
+            border-radius: 5px;
+            background-color: #F4F4F4;
+            font-size: 1rem;
+            color: #6B6B6B;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus {
+            outline: none;
+            border-color: #B0D6D6;
+        }
+
+        .create-account-button {
+            width: 100%;
+            padding: 15px;
+            background-color: #8FC8C8;
+            color: white;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        .create-account-button:hover {
+            background-color: #6BB7B7;
+        }
+
+        #error-message {
+            color: #F1A3A3;
+            font-size: 1rem;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul>
+                <div class="logo">
+                    <img src="Photo logo/EcoProteous logo.jpg" alt="Logo">
+                </div>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="./Services/">Services</a></li>
+                <li><a href="./About/">About</a></li>
+                <li><a href="./Feedback/">Feedback</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Create Your Account</h1>
+            <p>Fill out the form below to create a new account.</p>
+
+            <!-- Form for creating account -->
+            <div class="form-container">
+                <form id="createAccountForm">
+                    <input type="text" id="newUsername" name="newUsername" placeholder="Username" required>
+                    <input type="password" id="newPassword" name="newPassword" placeholder="Password" required>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
+                    <button type="submit" class="create-account-button">Create Account</button>
+                </form>
+                <p id="error-message"></p>
+            </div>
+        </div>
+    </section>
+    <script>
+        // Simple form validation
+        document.getElementById('createAccountForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+    
+            // Get the values from the form fields
+            const username = document.getElementById('newUsername').value;
+            const password = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+    
+            // Validate that passwords match
+            if (password !== confirmPassword) {
+                document.getElementById('error-message').textContent = 'Passwords do not match!';
+            } else if (username.trim() === '' || password.trim() === '') {
+                document.getElementById('error-message').textContent = 'Please fill in all fields!';
+            } else {
+                // Simulate account creation (in a real-world case, you'd submit this to a server)
+                document.getElementById('error-message').textContent = '';  // Clear previous error
+                alert('Account created successfully!');
+                window.location.href = "https://www.youtube.com/watch?v=TBoBfT-_sfM&list=RDD0ehC_8sQuU&index=10"; // Redirect to login page
+            }
+        });
+    </script>
+    
+
+</body>
+</html>
