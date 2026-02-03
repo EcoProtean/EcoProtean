@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Login - EcoProteous</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #b1caff;
+            position: relative;
+            height: 100vh;
+            background: linear-gradient(135deg,
+                    #205468 5%,
+                    #256e68 25%,
+                    #2f7874 50%,
+                    #29716f 75%,
+                    #1e4b5d 100%);
+            background-size: 200% 200%;
+            animation: gradientAnimation 15s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Shapes styling */
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape1 {
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.2);
+            top: 10%;
+            left: 15%;
+        }
+
+        .shape2 {
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.2);
+            top: 50%;
+            right: 10%;
+        }
+
+        .shape3 {
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.2);
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-60px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        /* Header Styling */
+        header {
+            background-color: rgba(51, 51, 51, 0.354);
+            padding: 30px;
+            text-align: center;
+            position: fixed;
+            /* Fix the header to the top */
+            top: 0;
+            /* Make it stay at the top */
+            left: 0;
+            /* Ensure it spans the entire width */
+            width: 100%;
+            /* Full width of the viewport */
+            z-index: 1000;
+            /* Ensure the header stays above other elements */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            /* Add a slight shadow to the header */
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        nav .logo img {
+            height: 40px;
+            margin-right: 20px;
+            border-radius: 100%;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: #1b9e9b;
+        }
+
+        /* Hero Section Styling */
+.hero {
+    height: 70vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    position: relative;
+    background: linear-gradient(135deg, #a3d8f4, #c8e6c9, #ffcccb); /* Soft pastel gradient */
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    width: 80%;
+    margin: 30px auto;
+}
+
+/* Hero Section */
+.hero {
+  margin-top: 70px;
+  height: 85vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(135deg, #B2D8D8 10%, #C4E7E7 40%, #F0F8F8 80%); /* Soft pastel gradient */
+  border-radius: 15px; /* Smooth rounded corners for the hero section */
+}
+
+.hero-content {
+  max-width: 1000px;
+}
+
+.profile-image {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 5px solid #002423;
+  margin-bottom: 20px;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  color: #2B4B4B; /* Dark pastel for the title */
+}
+
+.hero p {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  color: #3D5C5C; /* Soft dark grayish pastel color */
+}
+
+/* Form Styling */
+.form-container {
+  background-color: #FFFFFF; /* Soft white background for the form */
+  border-radius: 8px;
+  padding: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow for better focus */
+}
+
+input[type="text"], input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 2px solid #D9D9D9; /* Light gray border */
+  border-radius: 5px;
+  background-color: #F4F4F4; /* Light pastel gray background for the inputs */
+  font-size: 1rem;
+  color: #6B6B6B; /* Darker text inside inputs */
+}
+
+input[type="text"]:focus, input[type="password"]:focus {
+  outline: none;
+  border-color: #B0D6D6; /* Focused border color */
+}
+
+.login-button {
+  width: 100%;
+  padding: 15px;
+  background-color: #8FC8C8; /* Light pastel blue */
+  color: white;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 15px;
+}
+
+.login-button:hover {
+  background-color: #6BB7B7; /* Slightly darker blue for hover */
+}
+
+/* Create Account Button Styling */
+.create-account-button {
+    width: 100%;
+    padding: 15px;
+    background-color: #b3e0cc; /* Pastel mint green */
+    color: white;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.create-account-button:hover {
+    background-color: #80c7b7; /* Slightly darker shade of pastel mint for hover effect */
+}
+
+#error-message {
+  color: #F1A3A3; /* Light red for error messages */
+  font-size: 1rem;
+  margin-top: 15px;
+  text-align: center;
+}
+
+
+.logo-1 {
+    display: flex;
+    justify-content: center; /* Center the logo horizontally */
+    align-items: center;     /* Center the logo vertically */
+    
+}
+
+.logo-1 img {
+    max-width: 100%;        /* Ensure the logo doesn’t exceed the container’s width */
+    height: 440px;           /* Maintain aspect ratio */
+    width: 400px;           /* Set a fixed width for the logo */
+    /* You can adjust the width to suit your design */
+    border-radius: 10px;    /* Optionally add border radius for rounded corners */
+}
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul>
+                <div class="logo">
+                    <img src="Photo logo/EcoProteous logo.jpg" alt="Logo">
+                </div>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="./Services/">Services</a></li>
+                <li><a href="./About/">About</a></li>
+                <li><a href="./Feedback/">Feedback</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+
+
+    <section class="hero">
+        <div class="logo-1">
+            <img src="Photo logo/EcoProteous logo.jpg" alt="Logo">
+        </div>
+        <div class="hero-content">
+            <h1>Login to EcoProteous</h1>
+            <p>Welcome! Please enter your username and password to access your account.</p>
+    
+            <div class="form-container">
+                <form id="loginForm" action="#" method="POST">
+                    <input type="text" id="username" name="username" placeholder="Username" required>
+                    <input type="password" id="password" name="password" placeholder="Password" required>
+                    <button type="submit" class="login-button">Login</button>
+                </form>
+                <p id="error-message"></p>
+                <!-- Create Account Button -->
+                <button id="createAccountButton" class="create-account-button">Create Account</button>
+
+            </div>
+        </div>
+    </section>
+
+    <script>
+    // Handle login form submission
+document.getElementById("loginForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    // Get the username and password entered by the user
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    // Check if the username and password are correct
+    if (username === "" || password === "") {
+        document.getElementById("error-message").textContent = "Please fill out all fields.";
+    } else if (username === "supot" && password === "supot123") {
+        // Redirect on successful login (replace with the correct URL)
+        window.location.href = "https://www.youtube.com/watch?v=TQ8WlA2GXbk&list=RDD0ehC_8sQuU&index=27";
+    } else {
+        // Show error message if credentials are incorrect
+        document.getElementById("error-message").textContent = "Invalid username or password. Please try again.";
+    }
+});
+
+// Create Account Button functionality
+document.getElementById("createAccountButton").addEventListener("click", function() {
+    // Redirect to the account creation page (Create.html)
+    window.location.href = "Create.html";
+});
+
+    </script>
+
+</body>
+
+</html>
