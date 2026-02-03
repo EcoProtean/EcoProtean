@@ -1,0 +1,51 @@
+[
+    {
+        "latitude": 8.3582,
+        "longitude": 124.8581,
+        "message": "Landslide-Prone Area: Barangay Damilag - Near Sitio Upper Damilag",
+        "description": "Frequent heavy rainfall and deforestation have made the slopes in Sitio Upper Damilag particularly vulnerable to landslides, especially during the rainy season. The steep inclines and loose soil near the river make this area highly prone to erosion.",
+        "seedling_suggestion": "Suggested Seedling: Narra - Known for its strong and deep roots, which help in stabilizing soil."
+    },
+    {
+        "latitude": 8.3609,
+        "longitude": 124.8625,
+        "message": "Landslide-Prone Area: Barangay Alae - Lower Hill Section",
+        "description": "The steep terrain and poorly compacted soil in the Lower Hill Section of Barangay Alae, combined with water runoff from nearby hills, contribute to frequent landslides in this area, especially during heavy rains.",
+        "seedling_suggestion": "Suggested Seedling: Bamboo - Fast-growing and excellent for preventing soil erosion on steep slopes."
+    },
+    {
+        "latitude": 8.3655,
+        "longitude": 124.8721,
+        "message": "Landslide-Prone Area: Barangay Dicklum - Near Fault Line",
+        "description": "Known for its loose soil and proximity to a fault line, Barangay Dicklum experiences landslides after even moderate seismic activity or heavy rain, particularly in the vicinity of the fault zone.",
+        "seedling_suggestion": "Suggested Seedling: Mahogany - A large tree with a deep root system that can strengthen loose soil."
+    },
+    {
+        "latitude": 8.3698,
+        "longitude": 124.8756,
+        "message": "Landslide-Prone Area: Barangay San Miguel - Typhoon-affected Zone",
+        "description": "The area's natural drainage system is insufficient to handle large volumes of water during typhoons, leading to erosion and occasional landslides in the low-lying areas near the main river.",
+        "seedling_suggestion": "Suggested Seedling: Vetiver Grass - Ideal for stabilizing soil due to its extensive root system that can grow vertically into the ground."
+    },
+    {
+        "latitude": 8.3723,
+        "longitude": 124.8802,
+        "message": "Landslide-Prone Area: Barangay Lunocan - Roadway Slope",
+        "description": "Frequent soil erosion along the steep inclines of Barangay Lunocan, particularly near the main road and agricultural plots, has caused landslides, particularly during rainy spells.",
+        "seedling_suggestion": "Suggested Seedling: Acacia - This tree is great for erosion control and has a spreading root system to stabilize slopes."
+    },
+    {
+        "latitude": 8.3758,
+        "longitude": 124.8610,
+        "message": "Landslide-Prone Area: Barangay Kalugmanan - Logging Zone",
+        "description": "Kalugmanan's high slopes combined with logging activities have destabilized the ground, particularly in the logging zones. This makes the area prone to landslides during the rainy season.",
+        "seedling_suggestion": "Suggested Seedling: Molave - A durable tree species with strong roots ideal for rehabilitating degraded areas."
+    },
+    {
+        "latitude": 8.3630,
+        "longitude": 124.8501,
+        "message": "Landslide-Prone Area: Barangay Santiago - Riverbank Region",
+        "description": "The combination of loose sedimentary rock and poor water drainage along the riverbanks in Barangay Santiago has led to frequent landslides, especially near riverbanks and erosion-prone slopes.",
+        "seedling_suggestion": "Suggested Seedling: Mangrove Trees - Suitable for riverbanks, these trees stabilize soil and reduce erosion caused by water runoff."
+    }
+]
