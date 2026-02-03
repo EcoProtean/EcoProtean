@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tree Seedlings</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+
+    <style>
+      /* General Reset */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+    
+      html, body {
+        height: 100%;
+        font-family: 'Poppins', sans-serif;
+        color: #4a4a4a; /* Softer dark gray */
+        background-color: #d3f9d8; /* Light pastel green background */
+      }
+    
+      /* Smooth Gradient Background Animation */
+      body {
+        position: relative;
+        background: rgb(187, 226, 186); /* Soft pastel light green */
+        background-size: 200% 200%;
+        animation: gradientAnimation 15s ease infinite;
+      }
+    
+      @keyframes gradientAnimation {
+        0% { background-position: 100% 50%; }
+        50% { background-position: 0% 50%; }
+        100% { background-position: 100% 50%; }
+      }
+    
+      /* Header Styles */
+      nav {
+        background-color: rgba(120, 170, 121, 0.8); /* Soft pastel green */
+      }
+    
+      .navbar-brand {
+        color: #46794b; /* Earthy green */
+        font-weight: bold;
+      }
+    
+      .navbar-nav .nav-item .nav-link {
+        color: #4b7f57; /* Soft dark green */
+      }
+    
+      .navbar-nav .nav-item .nav-link:hover {
+        color: #8fd8d8; /* Soft pastel teal */
+      }
+    
+      .navbar-toggler-icon {
+        background-color: #8fd8d8; /* Light teal */
+      }
+    
+      /* Title */
+      .title {
+        margin-top: 2rem;
+        text-align: center;
+        color: #4b7f57; /* Soft dark green */
+        font-family: 'Georgia', serif;
+        font-size: 2.5rem;
+        font-weight: bold;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+      }
+    
+      /* Flex Container for Seedlings List */
+      .applet-flex-container {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 3rem;
+        gap: 1rem;
+        padding: 0 2rem;
+      }
+    
+      /* Card Styles */
+      .card {
+        width: 15rem;
+        border-radius: 10px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        background-color: #e1f7e1; /* Light pastel green for cards */
+        transition: transform 0.3s ease-in-out;
+      }
+    
+      .card:hover {
+        transform: translateY(-5px);
+      }
+    
+      .card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        filter: brightness(85%);
+      }
+    
+      .card-body {
+        padding: 1rem;
+        text-align: center;
+        background-color: #f2faf2; /* Very light pastel green */
+      }
+    
+      .card-title {
+        color: #4b7f57; /* Soft dark green */
+        font-size: 1.2rem;
+        font-weight: 600;
+      }
+    
+      /* Footer Styling */
+      footer {
+        background-color: rgba(0, 0, 0, 0.2);
+        color: white;
+        text-align: center;
+        padding: 30px 20px;
+        width: 100%;
+        position: relative;
+        bottom: 0;
+      }
+    
+      footer a {
+        color: #8fd8d8; /* Light pastel teal */
+        text-decoration: none;
+      }
+    
+      footer a:hover {
+        text-decoration: underline;
+      }
+    
+      footer .social-links {
+        margin: 10px 0;
+      }
+    
+      footer .social-links a {
+        margin: 0 10px;
+        font-size: 18px;
+      }
+    
+    </style>
+    
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="../index.html">EcoProtean Proteus</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item dropdown">
+
+            <form class="d-flex" role="search" onsubmit="return false;">
+              <input class="form-control me-2" type="search" id="searchInput" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success" type="submit" id="searchButton">Search</button>
+            </form>
+      </div>
+    </div>
+  </nav>
+
+  <h1 class="title">List of Seedlings</h1>
+  <div class="applet-flex-container" id="appletContainer"></div>
+
+  <footer>
+    <p>&copy; 2024 EcoProtean Proteus | All Rights Reserved</p>
+
+    </div>
+    <p><a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+  </footer>
+
+  <script src="seedlings.js"></script>
+
+</body>
+
+</html>
