@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../style.css">
+  <title>EcoProtean Proteus</title>
+  <style> 
+
+  
+    
+
+    /* Feedback Section */
+    #feedback {
+      background-color: white;
+      padding: 30px;
+      margin: 80px auto;
+      max-width: 600px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #feedback h2 {
+      color: #2a9d8f;
+      text-align: center;
+    }
+
+    #feedback form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    #feedback label {
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+
+    #feedback input, 
+    #feedback textarea {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    #feedback input:focus, 
+    #feedback textarea:focus {
+      border-color: #2a9d8f;
+      outline: none;
+    }
+
+    #feedback textarea {
+      resize: none;
+    }
+
+    #feedback button {
+      background-color: #2a9d8f;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    #feedback button:hover {
+      background-color: #21867a;
+    }
+
+    /* Shapes (if you want them visible) */
+    .shape {
+      position: absolute;
+      background-color: #2a9d8f;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      opacity: 0.3;
+    }
+
+    .shape1 {
+      top: 50px;
+      left: 50px;
+    }
+
+    .shape2 {
+      top: 150px;
+      right: 50px;
+    }
+
+    .shape3 {
+      bottom: 50px;
+      left: 100px;
+    }
+
+    .shape4 {
+      bottom: 150px;
+      right: 150px;
+    }
+
+    .shape5 {
+      top: 250px;
+      right: 200px;
+    }
+    .header a.active {
+    background-color: rgb(54, 54, 1);
+    color: white;
+  }
+  </style>
+</head>
+
+<body>
+  <header>
+    <nav>
+      <div class="logo">
+        <img src="../Photo logo/EcoProteous logo.jpg" alt="Logo">
+      </div>
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../Services/">Services</a></li>
+        <li><a href="../About/">About</a></li>
+        <li><a class="active" href="../Feedback/">Feedback</a></li>
+        <li><a href="../login.html">Log in/Sign Up</a></li>
+      </ul>
+    </nav>
+  </header>
+
+
+
+  <!-- Feedback Section -->
+  <section id="feedback">
+    <h2>We Value Your Feedback</h2>
+    <form action="submit_feedback.php" method="POST">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" placeholder="Your name" required>
+      <br>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" placeholder="Your email" required>
+      <br>
+
+      <label for="message">Your Feedback:</label>
+      <textarea id="message" name="message" placeholder="Write your feedback here..." rows="5" required></textarea>
+      <br>
+
+      <button type="submit">Submit Feedback</button>
+      
+    </form>
+     <!-- Thank You Message -->
+  <div id="thankYouMessage">
+    <br>
+    <h3>Thank you for your feedback!</h3>
+    <p>We appreciate your input and will use it to improve our services.</p>
+  </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2024 EcoProtean Proteus | All Rights Reserved</p>
+  
+    </div>
+    <p><a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+  </footer>
+
+  <div class="shape shape1"></div>
+  <div class="shape shape2"></div>
+  <div class="shape shape3"></div>
+  <div class="shape shape4"></div>
+  <div class="shape shape5"></div>
+
+  <Script src="feedback.js" ></Script>
+</body>
+
+</html>
