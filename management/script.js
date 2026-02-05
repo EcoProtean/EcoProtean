@@ -32,3 +32,20 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 }).addTo(map);
 
 const markers = {};
+
+function getMarkerColor(risk) {
+  if (risk === "Low") return "green";
+  if (risk === "Medium") return "orange";
+  return "red";
+}
+
+trees.forEach(tree => {
+  const color = getMarkerColor(tree.risk);
+  markers[tree.id] = L.circleMarker([tree.lat, tree.lng], {
+    radius: 10,
+    color: color,
+    fillColor: color,
+    fillOpacity: 0.8
+  }).addTo(map)
+    .bindPopup(`<strong>${tree.id}</strong><br>Movement: ${tree.movement} cm<br>Risk: ${tree.risk}`);
+});
