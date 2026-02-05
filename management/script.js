@@ -114,3 +114,4 @@ function getRiskClass(risk) {
 }
 
 setInterval(simulateSensorData, 5000);
+simulateSensorData();
