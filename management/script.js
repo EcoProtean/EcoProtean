@@ -30,3 +30,5 @@ const map = L.map("map").setView([8.378, 124.868], 12);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   attribution: "© OpenStreetMap contributors"
 }).addTo(map);
+
+const markers = {};
