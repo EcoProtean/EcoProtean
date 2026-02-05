@@ -74,57 +74,82 @@ body {
 
 /* Header Styling */
 header {
-  background-color: rgba(51, 51, 51, 0.354);
-  padding: 30px;
-  text-align: center;
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 15px 30px;
   position: relative;
   z-index: 1;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 nav {
   display: flex;
   align-items: center;
-  justify-content: right;
+  justify-content: space-between;
 }
 
-.exit-icon{
-
-    height: 40px;
-  margin-right: 20px;
-  border-radius: 100%;
-
-
-
+nav .logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 nav .logo img {
   height: 40px;
-  margin-right: 20px;
-  border-radius: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: left;
+  border-radius: 50%;
+}
+
+.logo-text {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #2f7874;
+}
+
+.tagline {
+  font-size: 0.75rem;
+  color: #666;
+  font-weight: 400;
+  margin-left: -5px;
 }
 
 nav ul {
   list-style: none;
   display: flex;
-  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  margin: 0;
 }
 
 nav ul li {
-  margin: 0 15px;
+  margin: 0;
 }
 
 nav ul li a {
-  color: white;
+  color: #333;
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 500;
+  font-size: 0.95rem;
   transition: color 0.3s;
+  padding: 8px 0;
 }
 
-nav ul li a:hover {
+nav ul li a:hover,
+nav ul li a.active {
   color: #1b9e9b;
+}
+
+.nav-icon {
+  height: 24px;
+  width: 24px;
+  transition: opacity 0.3s;
+}
+
+.icon-link {
+  display: flex;
+  align-items: center;
+}
+
+.icon-link:hover .nav-icon {
+  opacity: 0.7;
 }
 
 /* Hero Section */
@@ -301,6 +326,7 @@ nav ul li a:hover {
     margin-right: 10px;
   }
 }
+
 footer {
   background-color: rgba(0, 0, 0, 0.334);
   color: rgb(255, 255, 255);
