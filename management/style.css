@@ -1,0 +1,24 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background: #f4f6f8;
+}
+
+header {
+  margin-bottom: 20px;
+}
+
+.kpi {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  flex: 1;
+  text-align: center;
+  font-weight: bold;
+}
