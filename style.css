@@ -84,13 +84,26 @@ header {
 nav {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: right;
+}
+
+.exit-icon{
+
+    height: 40px;
+  margin-right: 20px;
+  border-radius: 100%;
+
+
+
 }
 
 nav .logo img {
   height: 40px;
   margin-right: 20px;
   border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: left;
 }
 
 nav ul {
