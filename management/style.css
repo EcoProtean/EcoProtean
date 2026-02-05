@@ -22,3 +22,12 @@ header {
   text-align: center;
   font-weight: bold;
 }
+
+#map { height: 400px; margin-bottom: 20px; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+  th, td { border: 1px solid #ccc; padding: 5px; text-align: center; }
+  .risk-low { color: green; font-weight: bold; }
+  .risk-medium { color: orange; font-weight: bold; }
+  .risk-high { color: red; font-weight: bold; }
+  #alerts { list-style: none; padding-left: 0; }
+  
