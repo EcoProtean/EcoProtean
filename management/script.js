@@ -98,3 +98,17 @@ function updateDashboard() {
   document.getElementById("lastUpdate").textContent =
     "Last update: " + new Date().toLocaleTimeString();
 }
+
+function addAlert(tree) {
+  const alertList = document.getElementById("alerts");
+  const alert = document.createElement("li");
+
+  alert.textContent = `${tree.id} – High Risk detected (${tree.cause}) at ${new Date().toLocaleTimeString()}`;
+  alertList.prepend(alert);
+}
+
+function getRiskClass(risk) {
+  if (risk === "Low") return "risk-low";
+  if (risk === "Medium") return "risk-medium";
+  return "risk-high";
+}
