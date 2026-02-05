@@ -49,24 +49,3 @@ trees.forEach(tree => {
   }).addTo(map)
     .bindPopup(`<strong>${tree.id}</strong><br>Movement: ${tree.movement} cm<br>Risk: ${tree.risk}`);
 });
-
-function simulateSensorData() {
-  trees.forEach(tree => {
-    // random movement (cm)
-    tree.movement = (Math.random() * 10).toFixed(2);
-
-    if (tree.movement < 3) {
-      tree.cause = "Wind";
-      tree.risk = "Low";
-    } else if (tree.movement < 6) {
-      tree.cause = "Rain / Soil Softening";
-      tree.risk = "Medium";
-    } else {
-      tree.cause = "Ground Instability";
-      tree.risk = "High";
-      addAlert(tree);
-    }
-  });
-
-  updateDashboard();
-}
