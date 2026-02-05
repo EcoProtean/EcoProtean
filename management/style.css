@@ -30,4 +30,30 @@ header {
   .risk-medium { color: orange; font-weight: bold; }
   .risk-high { color: red; font-weight: bold; }
   #alerts { list-style: none; padding-left: 0; }
-  
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+}
+
+th {
+  background: #2e7d32;
+  color: white;
+}
+
+.risk-low { color: green; }
+.risk-medium { color: orange; }
+.risk-high { color: red; }
+
+ul {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+}
