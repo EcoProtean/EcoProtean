@@ -112,3 +112,5 @@ function getRiskClass(risk) {
   if (risk === "Medium") return "risk-medium";
   return "risk-high";
 }
+
+setInterval(simulateSensorData, 5000);
