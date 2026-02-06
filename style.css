@@ -171,15 +171,15 @@ nav ul li a.active {
 
 /* Footer */
 footer {
-  background-color: #ffffff;
-  color: #1F5E3D;
+  background-color: #2c5f5d;
+  color: #ffffff;
   text-align: center;
   padding: 15px 10px;
   width: 100%;
 }
 
 footer a {
-  color: #1F5E3D;
+  color: #ffffff;
   text-decoration: none;
   transition: opacity 0.3s;
 }
