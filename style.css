@@ -113,8 +113,7 @@ nav ul li a.active {
   align-items: center;
   text-align: center;
   position: relative;
-  background: url('Photo logo/hero-landscape.jpg') center/cover no-repeat;
-  /* Replace with your landscape image path */
+  background: url('Photo logo/Background.jpg') center/cover no-repeat;
 }
 
 .hero-content {
