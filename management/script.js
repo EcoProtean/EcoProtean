@@ -4,25 +4,34 @@ const trees = [
     id: "T01",
     lat: 8.341176,
     lng: 124.892993,
+    location: "...",
     movement: 0,
     cause: "Stable",
     risk: "Low",
+    sensorStatus: "Active",
+    batteryLevel: 85
   },
   {
     id: "T02",
     lat: 8.374973,
     lng: 124.902427,
+    location: "...",
     movement: 0,
     cause: "Stable",
     risk: "Low",
+    sensorStatus: "Active",
+    batteryLevel: 90
   },
   {
     id: "T03",
     lat:8.402315,
     lng: 124.899830,
+    location: "...",
     movement: 0,
     cause: "Stable",
     risk: "Low",
+    sensorStatus: "Active",
+    batteryLevel: 89
   }
 ];
 
