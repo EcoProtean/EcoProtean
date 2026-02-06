@@ -1,3 +1,4 @@
+window.onload = function() {
 const trees = [
   {
     id: "T01",
@@ -115,3 +116,5 @@ function getRiskClass(risk) {
 
 setInterval(simulateSensorData, 5000);
 simulateSensorData();
+
+};
