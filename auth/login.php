@@ -1,12 +1,12 @@
 <?php
 session_start();
-require_once 'config.php';
+require_once '../config.php';
 
 $error = '';
 
 // Redirect if already logged in
 if (isset($_SESSION['user_id'])) {
-    header('Location: dashboard.php');
+    header('Location: ../dashboard.php');
     exit;
 }
 
@@ -20,42 +20,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($email) || empty($password)) {
         $error = 'Please enter both email and password.';
     } else {
-        try {
-            $pdo = getDBConnection();
+        // Check if user exists
+        $stmt = $conn->prepare("SELECT user_id, full_name, email, password, role FROM users WHERE email = ?");
+        $stmt->bind_param('s', $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $user = $result->fetch_assoc();
+        
+        if ($user && password_verify($password, $user['password'])) {
+            // Password is correct - create session
+            $_SESSION['user_id'] = $user['user_id'];
+            $_SESSION['full_name'] = $user['full_name'];
+            $_SESSION['email'] = $user['email'];
+            $_SESSION['role'] = $user['role'];
             
-            // Check if user exists
-            $stmt = $pdo->prepare("SELECT user_id, full_name, email, password, role FROM users WHERE email = ?");
-            $stmt->execute([$email]);
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            if ($user && password_verify($password, $user['password'])) {
-                // Password is correct - create session
-                $_SESSION['user_id'] = $user['user_id'];
-                $_SESSION['full_name'] = $user['full_name'];
-                $_SESSION['email'] = $user['email'];
-                $_SESSION['role'] = $user['role'];
-                
-                // Handle "Remember me"
-                if ($remember) {
-                    // Set cookie for 30 days
-                    setcookie('user_email', $email, time() + (30 * 24 * 60 * 60), '/');
-                }
-                
-                // Redirect based on role
-                if ($user['role'] === 'admin') {
-                    header('Location: admin_dashboard.php');
-                } elseif ($user['role'] === 'manager') {
-                    header('Location: manager_dashboard.php');
-                } else {
-                    header('Location: dashboard.php');
-                }
-                exit;
-            } else {
-                $error = 'Invalid email or password.';
+            // Handle "Remember me"
+            if ($remember) {
+                // Set cookie for 30 days
+                setcookie('user_email', $email, time() + (30 * 24 * 60 * 60), '/');
             }
-        } catch (PDOException $e) {
-            $error = 'Database error: ' . $e->getMessage();
+            
+            // Log the login activity
+            logActivity($conn, $user['user_id'], 'login', 'User logged in successfully');
+            
+            // Redirect based on role
+            if ($user['role'] === 'admin') {
+                header('Location: ../admin_dashboard.php');
+            } elseif ($user['role'] === 'manager') {
+                header('Location: ../manager_dashboard.php');
+            } else {
+                header('Location: ../dashboard.php');
+            }
+            exit;
+        } else {
+            $error = 'Invalid email or password.';
         }
+        $stmt->close();
     }
 }
 
@@ -74,7 +74,7 @@ $savedEmail = $_COOKIE['user_email'] ?? '';
     <div class="login-container">
         <div class="logo-container">
             <!-- Insert your EPP logo here -->
-            <img src="image.png" alt="EPP Logo" id="logoImage">
+            <img src="../image.png" alt="EPP Logo" id="logoImage">
         </div>
         
         <div class="login-header">
