@@ -177,23 +177,8 @@ footer p {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  header {
-    padding: 12px 20px;
-  }
-
-  nav {
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  nav ul {
-    gap: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .map-container {
-    margin-top: 120px;
-    height: calc(100vh - 120px - 120px);
-  }
+  header { padding: 12px 20px; }
+  nav { flex-direction: column; gap: 15px; }
+  nav ul { gap: 20px; flex-wrap: wrap; justify-content: center; }
+  .map-container { margin-top: 120px; height: calc(100vh - 120px - 120px); }
 }
