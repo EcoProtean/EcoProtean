@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             // Insert new user with default role 'user'
             $stmt = $conn->prepare("INSERT INTO users (first_name, last_name, email, password, role) VALUES (?, ?, ?, ?, 'user')");
-            $stmt->bind_param('sss', $firstName, $lastName, $email, $hashedPassword);
+            $stmt->bind_param('ssss', $firstName, $lastName, $email, $hashedPassword);
             
             if ($stmt->execute()) {
                 $success = 'Account created successfully! Redirecting to login...';
