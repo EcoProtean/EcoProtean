@@ -36,11 +36,11 @@ if (!empty($_SESSION['user_id'])) {
           <?php if (in_array($_SESSION['role'], ['admin','manager'])): ?>
             <li><a href="admin/index.php">Admin</a></li>
           <?php endif; ?>
-          <li><a href="/ecoprotean/auth/logout.php" class="icon-link">
+          <li><a href="/EcoProtean/auth/logout.php" class="icon-link">
             <img src="Photo logo/exit.png" alt="Logout" class="nav-icon">
           </a></li>
         <?php else: ?>
-          <li><a href="/ecoprotean/auth/login.php">Login</a></li>
+          <li><a href="/EcoProtean/auth/login.php">Login</a></li>
         <?php endif; ?>
       </ul>
     </nav>
