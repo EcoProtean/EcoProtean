@@ -1,7 +1,7 @@
 const password = document.getElementById('password');
 const togglePassword = document.getElementById('togglePassword');
 const eyeIcon = document.getElementById('eyeIcon');
-const eyeOffIcon = document.getElementById('eyeOffIcon');
+const eyeSlashIcon = document.getElementById('eyeSlashIcon');
 
 // Toggle password visibility
 if (togglePassword) {
@@ -11,6 +11,6 @@ if (togglePassword) {
         
         // Toggle eye icons using class
         eyeIcon.classList.toggle('hidden');
-        eyeOffIcon.classList.toggle('hidden');
+        eyeSlashIcon.classList.toggle('hidden');
     });
 }
