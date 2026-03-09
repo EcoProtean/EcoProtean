@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'config.php';
+require_once '../config.php';
 
 $error = '';
 $success = '';
@@ -23,34 +23,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (!$terms) {
         $error = 'You must agree to the Terms of Service and Privacy Policy.';
     } else {
-        try {
-            $pdo = getDBConnection();
+        // Check if email already exists
+        $stmt = $conn->prepare("SELECT user_id FROM users WHERE email = ?");
+        $stmt->bind_param('s', $email);
+        $stmt->execute();
+        $stmt->store_result();
+        
+        if ($stmt->num_rows > 0) {
+            $error = 'An account with this email already exists.';
+        } else {
+            // Combine first and last name
+            $fullName = $firstName . ' ' . $lastName;
             
-            // Check if email already exists
-            $stmt = $pdo->prepare("SELECT user_id FROM users WHERE email = ?");
-            $stmt->execute([$email]);
+            // Hash password
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
             
-            if ($stmt->rowCount() > 0) {
-                $error = 'An account with this email already exists.';
-            } else {
-                // Combine first and last name
-                $fullName = $firstName . ' ' . $lastName;
-                
-                // Hash password
-                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-                
-                // Insert new user with default role 'user'
-                $stmt = $pdo->prepare("INSERT INTO users (full_name, email, password, role) VALUES (?, ?, ?, 'user')");
-                $stmt->execute([$fullName, $email, $hashedPassword]);
-                
+            // Insert new user with default role 'user'
+            $stmt = $conn->prepare("INSERT INTO users (full_name, email, password, role) VALUES (?, ?, ?, 'user')");
+            $stmt->bind_param('sss', $fullName, $email, $hashedPassword);
+            
+            if ($stmt->execute()) {
                 $success = 'Account created successfully! Redirecting to login...';
                 
                 // Redirect to login page after 2 seconds
                 header("refresh:2;url=login.php");
+            } else {
+                $error = 'Registration failed. Please try again.';
             }
-        } catch (PDOException $e) {
-            $error = 'Database error: ' . $e->getMessage();
         }
+        $stmt->close();
     }
 }
 ?>
@@ -66,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="signup-container">
         <div class="logo-container">
             <!-- Insert your EPP logo here -->
-            <img src="image.png" alt="EPP Logo" id="logoImage">
+            <img src="../image.png" alt="EPP Logo" id="logoImage">
         </div>
         
         <div class="signup-header">
