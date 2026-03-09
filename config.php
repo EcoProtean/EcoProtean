@@ -24,7 +24,7 @@ $conn->set_charset('utf8mb4');
 function requireLogin() {
     if (session_status() === PHP_SESSION_NONE) session_start();
     if (empty($_SESSION['user_id'])) {
-        header('Location: /login.php');
+        header('Location: /ecoprotean/auth/login.php');
         exit;
     }
 }

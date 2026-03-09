@@ -13,10 +13,10 @@ CREATE TABLE users (
 );
 
 -- SAMPLE DATA FOR USERS
-INSERT INTO users (full_name, email, password, role) VALUES
-('Admin User', 'admin@ecoprotean.com', 'password123', 'admin'),
-('Maria Santos', 'manager@ecoprotean.com', 'password1234', 'manager'),
-('Juan Dela Cruz', 'user@ecoprotean.com', 'password12345', 'user');
+INSERT INTO users (first_name, last_name, email, password, role) VALUES
+('Admin', 'User', 'admin@ecoprotean.com', 'password123', 'admin'),
+('Maria', 'Santos', 'manager@ecoprotean.com', 'password1234', 'manager'),
+('Juan', 'Dela Cruz', 'user@ecoprotean.com', 'password12345', 'user');
 
 -- Activity Logs Table
 CREATE TABLE activity_logs (
@@ -127,7 +127,7 @@ SELECT
     t.tree_name,
     t.reason,
     l.location_name,
-    u.full_name AS recommended_by
+    u.first_name AS recommended_by
 FROM tree_recommendations t
 JOIN locations l ON t.location_id = l.location_id
 JOIN users u ON t.recommended_by = u.user_id;
