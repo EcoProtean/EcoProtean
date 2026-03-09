@@ -111,7 +111,8 @@ INSERT INTO tree_recommendations (location_id, tree_name, reason, recommended_by
 -- Query to Retrieve Activity Logs with User Information
 SELECT 
     a.log_id,
-    u.full_name,
+    u.first_name,
+    u.last_name,
     u.email,
     u.role,
     a.action,
