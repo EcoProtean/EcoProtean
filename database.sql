@@ -4,7 +4,8 @@ USE ecoprotean;
 -- Users Table
 CREATE TABLE users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
-    full_name VARCHAR(100) NOT NULL,                         -- CHANGED: added NOT NULL
+    first_name VARCHAR(50) NOT NULL,                         -- CHANGED: added first_name column
+    last_name VARCHAR(50) NOT NULL,                          -- CHANGED: added last_name column
     email VARCHAR(100) UNIQUE,
     password VARCHAR(255) NOT NULL,                          -- CHANGED: added NOT NULL
     role ENUM('user', 'manager', 'admin') NOT NULL,          -- CHANGED: added NOT NULL
