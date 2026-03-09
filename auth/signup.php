@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         type="text" 
                         id="firstName" 
                         name="firstName" 
-                        placeholder="John"
+                        placeholder="Jane"
                         value="<?php echo htmlspecialchars($_POST['firstName'] ?? ''); ?>"
                         required
                     >
@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         type="text" 
                         id="lastName" 
                         name="lastName" 
-                        placeholder="Doe"
+                        placeholder="Justine"
                         value="<?php echo htmlspecialchars($_POST['lastName'] ?? ''); ?>"
                         required
                     >
@@ -116,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     type="email" 
                     id="email" 
                     name="email" 
-                    placeholder="john.doe@example.com"
+                    placeholder="jane.justine@example.com"
                     value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>"
                     required
                 >
