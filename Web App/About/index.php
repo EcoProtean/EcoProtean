@@ -1,6 +1,13 @@
+<?php
+session_start();
+require_once '../../config.php';
+
+if (!empty($_SESSION['user_id'])) {
+    logActivity($conn, $_SESSION['user_id'], 'VIEW_ABOUT', 'Viewed about page');
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +17,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <title>About - EcoProtean</title>
 </head>
-
 <body>
   <header>
     <nav>
@@ -22,12 +28,19 @@
         </div>
       </div>
       <ul>
-        <li><a href="../../index.html">Home</a></li>
-        <li><a href="../Risk Map/index.html">Risk Map</a></li>
+        <li><a href="../../index.php">Home</a></li>
+        <li><a href="../Risk Map/index.php">Risk Map</a></li>
         <li><a class="active" href="../About/">About</a></li>
-        <li><a href="../../index.html" class="icon-link">
-            <img src="../Photo logo/exit.png" alt="Exit" class="nav-icon">
+        <?php if (!empty($_SESSION['role']) && in_array($_SESSION['role'], ['admin','manager'])): ?>
+          <li><a href="../../admin/index.php">Admin</a></li>
+        <?php endif; ?>
+        <?php if (!empty($_SESSION['user_id'])): ?>
+          <li><a href="../../logout.php" class="icon-link">
+            <img src="../Photo logo/exit.png" alt="Logout" class="nav-icon">
           </a></li>
+        <?php else: ?>
+          <li><a href="../../login.php">Login</a></li>
+        <?php endif; ?>
       </ul>
     </nav>
   </header>
@@ -76,7 +89,7 @@
       </div>
     </section>
 
-    <!-- SDG Alignment -->
+    <!-- SDG Section -->
     <section class="sdg-section">
       <h2>Aligned with United Nations SDGs</h2>
       <div class="sdg-container">
@@ -97,45 +110,33 @@
     <section class="team-section">
       <h2>Meet Our Team</h2>
       <p class="team-intro">Four passionate individuals committed to environmental innovation</p>
-      
       <div class="team-grid">
         <div class="team-member">
-          <div class="member-photo">
-            <img src="../Photo logo/Person-Icon.webp" alt="Kent Ryan L. Pagongpong">
-          </div>
+          <div class="member-photo"><img src="../Photo logo/Person-Icon.webp" alt="Kent Ryan L. Pagongpong"></div>
           <div class="member-info">
             <h3>Kent Ryan L. Pagongpong</h3>
             <p class="role">Co-Founder & CEO</p>
             <p class="description">Oversees the strategic direction of EcoProtean Proteus, ensuring we fulfill our mission of ecological responsibility and sustainability.</p>
           </div>
         </div>
-
         <div class="team-member">
-          <div class="member-photo">
-            <img src="../Photo logo/Person-Icon.webp" alt="Team Member 2">
-          </div>
+          <div class="member-photo"><img src="../Photo logo/Person-Icon.webp" alt="Katelyn L. Coming"></div>
           <div class="member-info">
             <h3>Katelyn L. Coming</h3>
             <p class="role">Co-Founder & CTO</p>
             <p class="description">Leads the technology development efforts, ensuring our mapping systems and services run smoothly and effectively.</p>
           </div>
         </div>
-
         <div class="team-member">
-          <div class="member-photo">
-            <img src="../Photo logo/Person-Icon.webp" alt="Team Member 3">
-          </div>
+          <div class="member-photo"><img src="../Photo logo/Person-Icon.webp" alt="Jane Justine T. Catingan"></div>
           <div class="member-info">
             <h3>Jane Justine T. Catingan</h3>
             <p class="role">Co-Founder & COO</p>
             <p class="description">Handles day-to-day operations, ensuring our services are delivered efficiently while maintaining our commitment to sustainability.</p>
           </div>
         </div>
-
         <div class="team-member">
-          <div class="member-photo">
-            <img src="../Photo logo/Person-Icon.webp" alt="Team Member 4">
-          </div>
+          <div class="member-photo"><img src="../Photo logo/Person-Icon.webp" alt="Antony C. Canete"></div>
           <div class="member-info">
             <h3>Antony C. Canete</h3>
             <p class="role">Co-Founder & CFO</p>
@@ -150,7 +151,5 @@
     <p>&copy; 2024 EcoProtean Proteus | All Rights Reserved</p>
     <p><a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
   </footer>
-
 </body>
-
 </html>
