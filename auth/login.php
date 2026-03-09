@@ -73,8 +73,8 @@ $savedEmail = $_COOKIE['user_email'] ?? '';
 <body>
     <div class="login-container">
         <div class="logo-container">
-            <!-- Insert your EPP logo here -->
-            <img src="../image.png" alt="EPP Logo" id="logoImage">
+            <!-- Insert logo here -->
+            <img src="/Photo logo/EcoProteous logo.jpg/" alt="EPP Logo" id="logoImage">
         </div>
         
         <div class="login-header">

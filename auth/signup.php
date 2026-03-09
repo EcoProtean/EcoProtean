@@ -66,8 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <div class="signup-container">
         <div class="logo-container">
-            <!-- Insert your EPP logo here -->
-            <img src="../image.png" alt="EPP Logo" id="logoImage">
+             <!-- Insert logo here -->
+            <img src="/Photo logo/EcoProteous logo.jpg/" alt="EPP Logo" id="logoImage">
         </div>
         
         <div class="signup-header">
