@@ -39,8 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
             
             // Insert new user with default role 'user'
-            $stmt = $conn->prepare("INSERT INTO users (full_name, email, password, role) VALUES (?, ?, ?, 'user')");
-            $stmt->bind_param('sss', $fullName, $email, $hashedPassword);
+            $stmt = $conn->prepare("INSERT INTO users (first_name, last_name, email, password, role) VALUES (?, ?, ?, ?, 'user')");
+            $stmt->bind_param('sss', $firstName, $lastName, $email, $hashedPassword);
             
             if ($stmt->execute()) {
                 $success = 'Account created successfully! Redirecting to login...';
