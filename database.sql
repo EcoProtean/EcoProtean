@@ -14,9 +14,9 @@ CREATE TABLE users (
 
 -- SAMPLE DATA FOR USERS
 INSERT INTO users (first_name, last_name, email, password, role) VALUES
-('Admin', 'User', 'admin@ecoprotean.com', 'password123', 'admin'),
-('Maria', 'Santos', 'manager@ecoprotean.com', 'password1234', 'manager'),
-('Juan', 'Dela Cruz', 'user@ecoprotean.com', 'password12345', 'user');
+('Admin', 'User', 'admin@example.com', 'password123', 'admin'),
+('Maria', 'Santos', 'manager@example.com', 'password1234', 'manager'),
+('Juan', 'Dela Cruz', 'user@example.com', 'password12345', 'user');
 
 -- Activity Logs Table
 CREATE TABLE activity_logs (
