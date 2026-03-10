@@ -82,7 +82,7 @@ foreach ($sensors as $s) {
         <span class="user-name"><?= htmlspecialchars(($_SESSION['first_name'] ?? '') . ' ' . ($_SESSION['last_name'] ?? '')) ?></span>
         <span class="user-role"><?= ucfirst($_SESSION['role']) ?></span>
       </div>
-      <a href="../logout.php" class="logout-btn">🚪 Logout</a>
+      <a href="../auth/logout.php" class="logout-btn">🚪 Logout</a>
     </div>
   </aside>
 
