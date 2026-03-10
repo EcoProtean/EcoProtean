@@ -166,6 +166,21 @@ $logs = $conn->query(
     .tab{padding:8px 18px;border-radius:8px;cursor:pointer;font-size:0.88rem;font-weight:500;
       background:#f0f4f3;color:#555;border:none;font-family:'Poppins',sans-serif;transition:all 0.2s;}
     .tab.active{background:#2c5f5d;color:#fff;}
+
+    .table-scroll {
+    max-height: 300px; /* or whatever height you want */
+    overflow-y: auto;
+    border: 1px solid #e0e0e0; /* optional: for visual separation */
+    border-radius: 8px;
+}
+
+/* Optional: make the table header sticky */
+.table-scroll thead th {
+    position: sticky;
+    top: 0;
+    background: #f7faf9;
+    z-index: 1;
+}
   </style>
 </head>
 <body>
@@ -330,11 +345,14 @@ $logs = $conn->query(
   </div>
 
   <!-- Activity Logs -->
-  <div class="section">
-    <h2>📋 Recent Activity Logs</h2>
+<div class="section">
+  <h2>📋 Recent Activity Logs</h2>
+  <div class="table-scroll">
     <table>
       <thead>
-        <tr><th>User</th><th>Role</th><th>Action</th><th>Description</th><th>IP</th><th>Time</th></tr>
+        <tr>
+          <th>User</th><th>Role</th><th>Action</th><th>Description</th><th>IP</th><th>Time</th>
+        </tr>
       </thead>
       <tbody>
         <?php foreach ($logs as $log): ?>
@@ -350,6 +368,8 @@ $logs = $conn->query(
       </tbody>
     </table>
   </div>
+</div>
+
   </div>
        <script src="script.js"></script>
 </body>
