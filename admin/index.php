@@ -413,44 +413,41 @@ $users = $conn->query(
   </div>
 </div>
 
-    <div class="section">
+<div class="section">
   <h2>👥 User Management</h2>
   <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Full Name</th>
-        <th>Email</th>
-        <th>Role</th>
-        <th>Last Login</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php foreach ($users as $user): ?>
-      <tr>
-        <td><?= $user['user_id'] ?></td>
-        <td><?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?></td>
-        <td><?= htmlspecialchars($user['email']) ?></td>
-        <td><?= ucfirst($user['role']) ?></td>
-        <td><?= $user['last_login'] ?? 'Never' ?></td>
-        <td>
-          <form method="POST" style="display:inline-block">
-            <input type="hidden" name="action" value="edit_user">
-            <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
-            <button class="btn">Edit</button>
-          </form>
-          <form method="POST" style="display:inline-block" onsubmit="return confirm('Delete this user?')">
-            <input type="hidden" name="action" value="delete_user">
-            <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
-            <button class="btn btn-danger">Delete</button>
-          </form>
-        </td>
-      </tr>
-      <?php endforeach; ?>
-    </tbody>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Role</th>
+      <th>Last Login</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php foreach($users as $user): ?>
+    <tr>
+      <td><?= $user['user_id'] ?></td>
+      <td><?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?></td>
+      <td><?= htmlspecialchars($user['email']) ?></td>
+      <td><?= ucfirst($user['role']) ?></td>
+      <td><?= $user['last_login'] ? $user['last_login'] : 'Never' ?></td>
+      <td>
+        <!-- Actions: Edit, Delete, Reset Password -->
+        <form method="POST" style="display:inline;">
+          <input type="hidden" name="action" value="delete_user">
+          <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
+          <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+        </form>
+      </td>
+    </tr>
+    <?php endforeach; ?>
+  </tbody>
   </table>
  </div>
+
   </div>
        <script src="script.js"></script>
 </body>
