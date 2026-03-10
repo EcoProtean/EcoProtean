@@ -155,12 +155,6 @@ foreach ($sensors as $s) {
   </main>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-  <!-- Pass PHP sensor data into JS -->
-  <script>
-    // Sensor data from database
-    const dbSensors = <?= json_encode($sensors) ?>;
-  </script>
   <script src="script.js"></script>
 </body>
 </html>
