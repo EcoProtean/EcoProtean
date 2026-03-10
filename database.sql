@@ -13,10 +13,11 @@ CREATE TABLE users (
 );
 
 -- SAMPLE DATA FOR USERS
+-- ALL PASSWORDS FOR EACH ROLE ARE THE SAME FOR TESTING PURPOSES: "password123" (hashed using bcrypt)
 INSERT INTO users (first_name, last_name, email, password, role) VALUES
-('Admin', 'User', 'admin@example.com', 'password123', 'admin'),
-('Maria', 'Santos', 'manager@example.com', 'password1234', 'manager'),
-('Juan', 'Dela Cruz', 'user@example.com', 'password12345', 'user');
+('Admin', 'User', 'admin@example.com', '$2a$12$2/v0lBTlevQICjVQZoMBsegpXCXN87MtKutHSd1ROufkuRHea1w7.', 'admin'),
+('Maria', 'Santos', 'manager@example.com', '$2a$12$2/v0lBTlevQICjVQZoMBsegpXCXN87MtKutHSd1ROufkuRHea1w7.', 'manager'),
+('Juan', 'Dela Cruz', 'user@example.com', '$2a$12$2/v0lBTlevQICjVQZoMBsegpXCXN87MtKutHSd1ROufkuRHea1w7.', 'user');
 
 -- Activity Logs Table
 CREATE TABLE activity_logs (
