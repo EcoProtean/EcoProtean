@@ -30,7 +30,6 @@ if (!empty($_SESSION['user_id'])) {
         </div>
       </div>
       <ul>
-        <li><a href="../../index.php">Home</a></li>
         <li><a class="active" href="../Risk Map/">Risk Map</a></li>
         <li><a href="../About/index.php">About</a></li>
         <?php if (!empty($_SESSION['role']) && in_array($_SESSION['role'], ['admin','manager'])): ?>
