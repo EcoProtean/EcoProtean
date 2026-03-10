@@ -75,11 +75,12 @@ $recommendations = $conn->query(
 )->fetch_all(MYSQLI_ASSOC);
 
 $logs = $conn->query(
-    "SELECT al.*, u.full_name, u.role
+    "SELECT al.*, CONCAT(u.first_name,' ',u.last_name) AS full_name, u.role
      FROM activity_logs al
      JOIN users u ON al.user_id = u.user_id
      ORDER BY al.created_at DESC LIMIT 30"
 )->fetch_all(MYSQLI_ASSOC);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
