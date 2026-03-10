@@ -98,6 +98,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         logActivity($conn, $_SESSION['user_id'], 'EDIT_USER', "Updated user ID $user_id (role/password)");
         $success = "User updated successfully.";
     }
+
+    
 }
 // ── Fetch data for display ─────────────────────────────
 
@@ -463,8 +465,50 @@ $users = $conn->query("
   </td>
 </tr>
 <?php endforeach; ?>
-        </tbody>
-    </table>
+</tbody>
+</table>
+    <br>
+
+    <button class="btn" onclick="openAddUserModal()">➕ Add User</button>
+</div>
+
+<!-- Add User Modal -->
+<div id="addUserModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+background:rgba(0,0,0,0.6);justify-content:center;align-items:center;z-index:9999;">
+
+  <div style="background:#fff;padding:25px;border-radius:12px;width:450px;box-shadow:0 4px 12px rgba(0,0,0,0.3);">
+
+    <h3 style="margin-bottom:20px;">Add New User</h3>
+
+    <form method="POST">
+      <input type="hidden" name="action" value="add_user">
+
+      <label>First Name</label>
+      <input type="text" name="first_name" required style="width:100%;padding:8px;margin:5px 0 10px;border-radius:6px;border:1px solid #ccc;">
+
+      <label>Last Name</label>
+      <input type="text" name="last_name" required style="width:100%;padding:8px;margin:5px 0 10px;border-radius:6px;border:1px solid #ccc;">
+
+      <label>Email</label>
+      <input type="email" name="email" required style="width:100%;padding:8px;margin:5px 0 10px;border-radius:6px;border:1px solid #ccc;">
+
+      <label>Password</label>
+      <input type="password" name="password" required style="width:100%;padding:8px;margin:5px 0 10px;border-radius:6px;border:1px solid #ccc;">
+
+      <label>Role</label>
+      <select name="role" style="width:100%;padding:8px;margin:5px 0 15px;border-radius:6px;border:1px solid #ccc;">
+        <option value="user">User</option>
+        <option value="manager">Manager</option>
+        <option value="admin">Admin</option>
+      </select>
+
+      <div style="display:flex;justify-content:flex-end;gap:10px;">
+        <button type="button" class="btn btn-danger" onclick="closeAddUserModal()">Cancel</button>
+        <button type="submit" class="btn">Add User</button>
+      </div>
+
+    </form>
+  </div>
 </div>
 
 <!-- View User Modal -->
