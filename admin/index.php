@@ -59,6 +59,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'add_r
     $success = "Tree recommendation added.";
 }
 
+// ── USER MANAGEMENT BACKEND ──
+
+// Delete user
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete_user') {
+    $user_id = (int)$_POST['user_id'];
+    if ($user_id != $_SESSION['user_id']) { // prevent self-deletion
+        $stmt = $conn->prepare("DELETE FROM users WHERE user_id=?");
+        $stmt->bind_param('i', $user_id);
+        $stmt->execute();
+        $stmt->close();
+        logActivity($conn, $_SESSION['user_id'], 'DELETE_USER', "Deleted user ID: $user_id");
+        $success = "User deleted successfully.";
+    } else {
+        $error = "You cannot delete your own account.";
+    }
+}
+
+// Edit user (role or password)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit_user') {
+    $user_id = (int)$_POST['user_id'];
+    $new_role = $_POST['role'] ?? 'staff';
+    $new_password = $_POST['password'] ?? null;
+
+    if ($new_password) {
+        $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
+        $stmt = $conn->prepare("UPDATE users SET role=?, password=? WHERE user_id=?");
+        $stmt->bind_param('ssi', $new_role, $hashed_password, $user_id);
+    } else {
+        $stmt = $conn->prepare("UPDATE users SET role=? WHERE user_id=?");
+        $stmt->bind_param('si', $new_role, $user_id);
+    }
+    $stmt->execute();
+    $stmt->close();
+    logActivity($conn, $_SESSION['user_id'], 'EDIT_USER', "Edited user ID: $user_id");
+    $success = "User updated successfully.";
+}
+
 // ── Fetch data for display ─────────────────────────────
 
 $locations = $conn->query(
@@ -80,7 +117,13 @@ $logs = $conn->query(
      ORDER BY al.created_at DESC LIMIT 30"
 )->fetch_all(MYSQLI_ASSOC);
 
+// Fetch users for user management
+$users = $conn->query(
+    "SELECT user_id, first_name, last_name, email, role, last_login 
+     FROM users ORDER BY created_at DESC"
+)->fetch_all(MYSQLI_ASSOC);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -370,6 +413,44 @@ $logs = $conn->query(
   </div>
 </div>
 
+    <div class="section">
+  <h2>👥 User Management</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Full Name</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Last Login</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php foreach ($users as $user): ?>
+      <tr>
+        <td><?= $user['user_id'] ?></td>
+        <td><?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?></td>
+        <td><?= htmlspecialchars($user['email']) ?></td>
+        <td><?= ucfirst($user['role']) ?></td>
+        <td><?= $user['last_login'] ?? 'Never' ?></td>
+        <td>
+          <form method="POST" style="display:inline-block">
+            <input type="hidden" name="action" value="edit_user">
+            <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
+            <button class="btn">Edit</button>
+          </form>
+          <form method="POST" style="display:inline-block" onsubmit="return confirm('Delete this user?')">
+            <input type="hidden" name="action" value="delete_user">
+            <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
+            <button class="btn btn-danger">Delete</button>
+          </form>
+        </td>
+      </tr>
+      <?php endforeach; ?>
+    </tbody>
+  </table>
+ </div>
   </div>
        <script src="script.js"></script>
 </body>
