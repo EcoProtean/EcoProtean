@@ -59,43 +59,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'add_r
     $success = "Tree recommendation added.";
 }
 
-// ── USER MANAGEMENT BACKEND ──
+// ── Handle User Management POST actions ──
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $action = $_POST['action'] ?? '';
 
-// Delete user
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete_user') {
-    $user_id = (int)$_POST['user_id'];
-    if ($user_id != $_SESSION['user_id']) { // prevent self-deletion
-        $stmt = $conn->prepare("DELETE FROM users WHERE user_id=?");
-        $stmt->bind_param('i', $user_id);
+    // Delete user
+    if ($action === 'delete_user') {
+        $user_id = (int)$_POST['user_id'];
+        if ($user_id === $_SESSION['user_id']) {
+            $error = "You cannot delete your own account!";
+        } else {
+            $stmt = $conn->prepare("DELETE FROM users WHERE user_id = ?");
+            $stmt->bind_param("i", $user_id);
+            $stmt->execute();
+            $stmt->close();
+            logActivity($conn, $_SESSION['user_id'], 'DELETE_USER', "Deleted user ID: $user_id");
+            $success = "User deleted successfully.";
+        }
+    }
+
+    // Edit user (role + optional password reset)
+    if ($action === 'edit_user') {
+        $user_id = (int)$_POST['user_id'];
+        $new_role = $_POST['role'] ?? 'user';
+        $new_password = trim($_POST['password'] ?? '');
+
+        if ($new_password !== '') {
+            $hashed_password = password_hash($new_password, PASSWORD_BCRYPT);
+            $stmt = $conn->prepare("UPDATE users SET role = ?, password = ? WHERE user_id = ?");
+            $stmt->bind_param("ssi", $new_role, $hashed_password, $user_id);
+        } else {
+            $stmt = $conn->prepare("UPDATE users SET role = ? WHERE user_id = ?");
+            $stmt->bind_param("si", $new_role, $user_id);
+        }
+
         $stmt->execute();
         $stmt->close();
-        logActivity($conn, $_SESSION['user_id'], 'DELETE_USER', "Deleted user ID: $user_id");
-        $success = "User deleted successfully.";
-    } else {
-        $error = "You cannot delete your own account.";
+        logActivity($conn, $_SESSION['user_id'], 'EDIT_USER', "Updated user ID $user_id (role/password)");
+        $success = "User updated successfully.";
     }
 }
-
-// Edit user (role or password)
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit_user') {
-    $user_id = (int)$_POST['user_id'];
-    $new_role = $_POST['role'] ?? 'staff';
-    $new_password = $_POST['password'] ?? null;
-
-    if ($new_password) {
-        $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
-        $stmt = $conn->prepare("UPDATE users SET role=?, password=? WHERE user_id=?");
-        $stmt->bind_param('ssi', $new_role, $hashed_password, $user_id);
-    } else {
-        $stmt = $conn->prepare("UPDATE users SET role=? WHERE user_id=?");
-        $stmt->bind_param('si', $new_role, $user_id);
-    }
-    $stmt->execute();
-    $stmt->close();
-    logActivity($conn, $_SESSION['user_id'], 'EDIT_USER', "Edited user ID: $user_id");
-    $success = "User updated successfully.";
-}
-
 // ── Fetch data for display ─────────────────────────────
 
 $locations = $conn->query(
@@ -420,48 +423,54 @@ $users = $conn->query("
 </div>
 
 <div class="section">
-  <h2>👥 User Management</h2>
-  <table>
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Name</th>
-      <th>Email</th>
-      <th>Role</th>
-      <th>Created At</th>
-      <th>Last Login</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <?php foreach($users as $user): ?>
-    <tr>
-      <td><?= $user['user_id'] ?></td>
-      <td><?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?></td>
-      <td><?= htmlspecialchars($user['email']) ?></td>
-      <td><?= ucfirst($user['role']) ?></td>
-      <td style="color:#555;font-size:0.85rem;"><?= $user['created_at'] ?></td>
-      <td style="color:#888;font-size:0.82rem;"><?= $user['last_login'] ?? 'Never' ?></td>
-      <td>
-        <!-- View Button -->
-        <button class="btn btn-sm" onclick="viewUser(<?= $user['user_id'] ?>)">View</button>
+    <h2>👥 User Management</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Created At</th>
+                <th>Last Login</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach($users as $user): ?>
+            <tr>
+                <td><?= $user['user_id'] ?></td>
+                <td><?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?></td>
+                <td><?= htmlspecialchars($user['email']) ?></td>
+                <td><?= ucfirst($user['role']) ?></td>
+                <td><?= $user['created_at'] ?></td>
+                <td><?= $user['last_login'] ?? 'Never' ?></td>
+                <td>
+                    <!-- View -->
+                    <button class="btn btn-sm" onclick="viewUser(<?= $user['user_id'] ?>)">View</button>
 
-        <!-- Edit Button -->
-        <button class="btn btn-sm" onclick="editUser(<?= $user['user_id'] ?>)">Edit</button>
+                    <!-- Edit Role -->
+                    <button class="btn btn-sm" onclick="editUser(<?= $user['user_id'] ?>, '<?= $user['role'] ?>')">Edit</button>
 
-        <!-- Delete Button -->
-        <form method="POST" style="display:inline;" onsubmit="return confirm('Delete this user?')">
-          <input type="hidden" name="action" value="delete_user">
-          <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
-          <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-        </form>
-      </td>
-    </tr>
-    <?php endforeach; ?>
-  </tbody>
-</table>
- </div>
+                    <!-- Reset Password -->
+                    <form method="POST" style="display:inline;">
+                        <input type="hidden" name="action" value="reset_password">
+                        <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
+                        <button type="submit" class="btn btn-warning btn-sm" onclick="return confirm('Reset password for <?= htmlspecialchars($user['first_name']) ?>?')">Reset PW</button>
+                    </form>
 
+                    <!-- Delete -->
+                    <form method="POST" style="display:inline;" onsubmit="return confirm('Delete <?= htmlspecialchars($user['first_name']) ?>?')">
+                        <input type="hidden" name="action" value="delete_user">
+                        <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
   </div>
        <script src="script.js"></script>
 </body>
