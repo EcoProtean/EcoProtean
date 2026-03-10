@@ -428,6 +428,7 @@ $users = $conn->query("
       <th>Name</th>
       <th>Email</th>
       <th>Role</th>
+      <th>Created At</th>
       <th>Last Login</th>
       <th>Actions</th>
     </tr>
@@ -439,10 +440,17 @@ $users = $conn->query("
       <td><?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?></td>
       <td><?= htmlspecialchars($user['email']) ?></td>
       <td><?= ucfirst($user['role']) ?></td>
-      <td><?= $user['last_login'] ? $user['last_login'] : 'Never' ?></td>
+      <td style="color:#555;font-size:0.85rem;"><?= $user['created_at'] ?></td>
+      <td style="color:#888;font-size:0.82rem;"><?= $user['last_login'] ?? 'Never' ?></td>
       <td>
-        <!-- Actions: Edit, Delete, Reset Password -->
-        <form method="POST" style="display:inline;">
+        <!-- View Button -->
+        <button class="btn btn-sm" onclick="viewUser(<?= $user['user_id'] ?>)">View</button>
+
+        <!-- Edit Button -->
+        <button class="btn btn-sm" onclick="editUser(<?= $user['user_id'] ?>)">Edit</button>
+
+        <!-- Delete Button -->
+        <form method="POST" style="display:inline;" onsubmit="return confirm('Delete this user?')">
           <input type="hidden" name="action" value="delete_user">
           <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
           <button type="submit" class="btn btn-danger btn-sm">Delete</button>
@@ -451,7 +459,7 @@ $users = $conn->query("
     </tr>
     <?php endforeach; ?>
   </tbody>
-  </table>
+</table>
  </div>
 
   </div>
