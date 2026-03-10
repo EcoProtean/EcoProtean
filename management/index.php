@@ -79,7 +79,7 @@ foreach ($sensors as $s) {
     </nav>
     <div class="sidebar-footer">
       <div class="user-info">
-        <span class="user-name"><?= htmlspecialchars($_SESSION['full_name']) ?></span>
+        <span class="user-name"><?= htmlspecialchars(($_SESSION['first_name'] ?? '') . ' ' . ($_SESSION['last_name'] ?? '')) ?></span>
         <span class="user-role"><?= ucfirst($_SESSION['role']) ?></span>
       </div>
       <a href="../logout.php" class="logout-btn">🚪 Logout</a>
