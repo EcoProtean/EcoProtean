@@ -178,7 +178,7 @@ $logs = $conn->query(
   <a href="../admin/index.php" class="active">📊 Dashboard</a>
   <a href="../WebApp/RiskMap/index.php">🗺️ Risk Map</a>
   <div class="logout">
-    <a href="../logout.php">🚪 Logout (<?= htmlspecialchars($_SESSION['full_name']) ?>)</a>
+    <a href="../auth/logout.php">🚪 Logout (<?= htmlspecialchars($_SESSION['full_name']) ?>)</a>
   </div>
 </div>
 
@@ -187,7 +187,7 @@ $logs = $conn->query(
   <div class="welcome">Welcome back, <?= htmlspecialchars($_SESSION['full_name']) ?> · Role: <?= ucfirst($_SESSION['role']) ?></div>
 
   <?php if (!empty($success)): ?>
-    <div class="alert success"><?= htmlspecialchars($success) ?></div>
+    <div class="alert success" id="successMessage"><?= htmlspecialchars($success) ?></div>
   <?php endif; ?>
 
   <!-- Stats -->
@@ -348,5 +348,6 @@ $logs = $conn->query(
   </div>
 
 </div>
+
 </body>
 </html>
