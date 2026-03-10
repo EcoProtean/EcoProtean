@@ -29,8 +29,7 @@ if (!empty($_SESSION['user_id'])) {
         </div>
       </div>
       <ul>
-        <li><a class="active" href="index.php">Home</a></li>
-        <li><a href="Web App/Risk Map/index.php">Risk Map</a></li>
+        <li><a class="active" href="Web App/Risk Map/index.php">Risk Map</a></li>
         <li><a href="Web App/About/index.php">About</a></li>
         <?php if (isLoggedIn()): ?>
           <?php if (in_array($_SESSION['role'], ['admin','manager'])): ?>
