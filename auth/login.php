@@ -35,6 +35,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['email'] = $user['email'];
             $_SESSION['role'] = $user['role'];
             $_SESSION['full_name'] = $user['first_name'] . ' ' . $user['last_name'];
+
+            // Update last_login in the database
+            $stmt = $conn->prepare("UPDATE users SET last_login = NOW() WHERE user_id = ?");
+            $stmt->bind_param("i", $user['user_id']);
+            $stmt->execute();
+            $stmt->close();
       
             // Handle "Remember me"
             if ($remember) {
