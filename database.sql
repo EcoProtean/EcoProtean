@@ -50,9 +50,9 @@ CREATE TABLE locations (
 );
 -- Sample Data for Locations
 INSERT INTO locations (location_name, latitude, longitude, risk_level, description) VALUES
-('Forest Zone A', 8.45420000, 124.63190000, 'High', 'High landslide risk area'),
-('Riverbank Area B', 8.46000000, 124.64000000, 'Medium', 'Flood-prone riverbank'),
-('Community Park C', 8.47000000, 124.65000000, 'Low', 'Low environmental risk area');
+('Forest Zone A',    8.34117600, 124.89299300, 'High',   'High landslide risk area'),
+('Riverbank Area B', 8.37497300, 124.90242700, 'Medium', 'Flood-prone riverbank'),
+('Community Park C', 8.40231500, 124.89983000, 'Low',    'Low environmental risk area');
 
 -- Sensors Table for Environmental Monitoring
 CREATE TABLE sensors (
