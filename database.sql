@@ -8,7 +8,8 @@ CREATE TABLE users (
     last_name VARCHAR(50) NOT NULL,                          -- CHANGED: added last_name column
     email VARCHAR(100) UNIQUE,
     password VARCHAR(255) NOT NULL,                          -- CHANGED: added NOT NULL
-    role ENUM('user', 'manager', 'admin') NOT NULL,          -- CHANGED: added NOT NULL
+    role ENUM('user', 'manager', 'admin') NOT NULL,  
+    last_login DATETIME,       
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
