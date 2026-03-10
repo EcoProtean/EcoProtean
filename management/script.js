@@ -37,7 +37,7 @@ window.onload = function () {
 
   // ── Fetch latest data from DB and update everything ──
   function fetchAndUpdate() {
-    fetch('../../api/locations.php')
+    fetch('../api/locations.php')
       .then(res => {
         if (!res.ok) throw new Error('Network error');
         return res.json();
