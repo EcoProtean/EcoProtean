@@ -190,6 +190,10 @@ $logs = $conn->query(
     <div class="alert success" id="successMessage"><?= htmlspecialchars($success) ?></div>
   <?php endif; ?>
 
+  <?php if (!empty($error)): ?>
+  <div class="alert error" id="errorMessage"><?= htmlspecialchars($error) ?></div>
+  <?php endif; ?>
+
   <!-- Stats -->
   <div class="stats">
     <div class="stat-card">
