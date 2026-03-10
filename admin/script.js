@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => msg.remove(), 500);
       }, 4000);
     }
-
     if (err) {
       setTimeout(() => {
         err.style.transition = 'opacity 0.5s ease';
@@ -21,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }, 4000);
     }
 });
+
 
 // Open View Modal
 function openViewModal(user) {
