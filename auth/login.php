@@ -34,7 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['last_name'] = $user['last_name'];
             $_SESSION['email'] = $user['email'];
             $_SESSION['role'] = $user['role'];
-            
+            $_SESSION['full_name'] = $user['first_name'] . ' ' . $user['last_name'];
+      
             // Handle "Remember me"
             if ($remember) {
                 // Set cookie for 30 days
