@@ -66,8 +66,7 @@ $locations = $conn->query(
 )->fetch_all(MYSQLI_ASSOC);
 
 $recommendations = $conn->query(
-    "SELECT tr.*, l.location_name,
-     CONCAT(u.first_name, ' ', u.last_name) AS recommended_by_name
+    "SELECT tr.*, l.location_name, CONCAT(u.first_name, ' ', u.last_name) AS recommended_by_name
      FROM tree_recommendations tr
      JOIN locations l ON tr.location_id = l.location_id
      JOIN users u ON tr.recommended_by = u.user_id
@@ -176,7 +175,7 @@ $logs = $conn->query(
     EcoProtean
     <span>Admin Panel</span>
   </div>
-  <a href="..admin/index.php" class="active">📊 Dashboard</a>
+  <a href="../admin/index.php" class="active">📊 Dashboard</a>
   <a href="../WebApp/RiskMap/index.php">🗺️ Risk Map</a>
   <div class="logout">
     <a href="../logout.php">🚪 Logout (<?= htmlspecialchars($_SESSION['full_name']) ?>)</a>
