@@ -122,6 +122,12 @@ $users = $conn->query(
     "SELECT user_id, first_name, last_name, email, role, last_login 
      FROM users ORDER BY created_at DESC"
 )->fetch_all(MYSQLI_ASSOC);
+
+$users = $conn->query("
+    SELECT user_id, first_name, last_name, email, role, last_login, created_at
+    FROM users 
+    ORDER BY created_at DESC
+")->fetch_all(MYSQLI_ASSOC);
 ?>
 
 <!DOCTYPE html>
