@@ -74,8 +74,8 @@ foreach ($sensors as $s) {
     </div>
     <nav class="sidenav">
       <a href="index.php" class="active">📊 Dashboard</a>
-      <a href="../Web App/Risk Map/index.php">🗺️ Risk Map</a>
-      <a href="../Web App/About/index.php">ℹ️ About</a>
+      <a href="../WebApp/RiskMap/index.php">🗺️ Risk Map</a>
+      <a href="../WebApp/About/index.php">ℹ️ About</a>
     </nav>
     <div class="sidebar-footer">
       <div class="user-info">
