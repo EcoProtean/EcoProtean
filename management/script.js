@@ -1,8 +1,15 @@
 // ─────────────────────────────────────────────
 //  EcoProtean - Manager Dashboard Script
-//  Fetches latest sensor readings from the DB
-//  every 5 seconds and updates the map + table.
-//  Risk level is calculated by SQL (not JS).
+//
+//  Every 5 seconds:
+//  1. POST to simulate.php  → inserts random
+//     movement into simulation_data (mimics gyro)
+//  2. GET  from locations.php → SQL calculates
+//     risk from latest reading → updates map
+//
+//  When real gyro sensors are ready, just remove
+//  the simulateSensors() call — everything else
+//  stays the same.
 // ─────────────────────────────────────────────
 
 window.onload = function () {
@@ -14,11 +21,10 @@ window.onload = function () {
     attribution: '© OpenStreetMap contributors'
   }).addTo(map);
 
-  const markers = {}; // stores marker references by location id
+  const markers = {};
 
   function getRiskColor(risk) {
-    if (!risk) return 'gray';
-    switch (risk.toLowerCase()) {
+    switch ((risk || '').toLowerCase()) {
       case 'low':    return 'green';
       case 'medium': return 'orange';
       case 'high':   return 'red';
@@ -35,19 +41,30 @@ window.onload = function () {
     }
   }
 
-  // ── Fetch latest data from DB and update everything ──
+  // ── STEP 1: Simulate gyro sensor readings ──
+  // Inserts a new random movement_level row for
+  // each sensor into simulation_data.
+  // Replace/remove this when using real sensors.
+  function simulateSensors() {
+    return fetch('../api/simulate.php', { method: 'POST' })
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) console.error('Simulate error:', data.message);
+      })
+      .catch(err => console.error('Simulate failed:', err));
+  }
+
+  // ── STEP 2: Fetch latest data from DB ──
+  // SQL calculates risk from the latest
+  // simulation_data row per sensor.
   function fetchAndUpdate() {
     fetch('../api/locations.php')
-      .then(res => {
-        if (!res.ok) throw new Error('Network error');
-        return res.json();
-      })
+      .then(res => res.json())
       .then(locations => {
         if (locations.error) {
           console.error('API error:', locations.message);
           return;
         }
-
         updateMap(locations);
         updateTable(locations);
         updateKPI(locations);
@@ -56,52 +73,50 @@ window.onload = function () {
         document.getElementById('lastUpdate').textContent =
           'Last update: ' + new Date().toLocaleTimeString();
       })
-      .catch(err => console.error('Failed to fetch locations:', err));
+      .catch(err => console.error('Fetch failed:', err));
   }
 
-  // ── Update map pins ──
+  // ── Run both steps together ──
+  function tick() {
+    simulateSensors().then(() => fetchAndUpdate());
+  }
+
+  // ── Map pins ──
   function updateMap(locations) {
     locations.forEach(loc => {
-      const color = getRiskColor(loc.risk);
-      const movement = loc.movement_level !== null
-        ? loc.movement_level + '/100'
-        : 'No data yet';
+      const color    = getRiskColor(loc.risk);
+      const movement = loc.movement_level !== null ? loc.movement_level + '/100' : 'No data yet';
 
       const popupText = `
         <strong>${loc.name}</strong><br>
         Movement: ${movement}<br>
-        Risk: <span style="color:${color};font-weight:bold;">${(loc.risk || 'unknown').toUpperCase()}</span>
+        Risk: <span style="color:${color};font-weight:bold;">
+          ${(loc.risk || 'unknown').toUpperCase()}
+        </span>
       `;
 
       if (markers[loc.id]) {
-        // Update existing marker
         markers[loc.id].setStyle({ color, fillColor: color });
         markers[loc.id].setPopupContent(popupText);
       } else {
-        // Create new marker
         markers[loc.id] = L.circleMarker(loc.coords, {
-          radius:      10,
-          color:       color,
-          fillColor:   color,
-          fillOpacity: 0.8
+          radius: 10, color, fillColor: color, fillOpacity: 0.8
         }).addTo(map).bindPopup(popupText);
       }
     });
   }
 
-  // ── Update monitoring table ──
+  // ── Table ──
   function updateTable(locations) {
     const table = document.getElementById('treeTable');
     table.innerHTML = '';
 
     locations.forEach(loc => {
-      const movement = loc.movement_level !== null
-        ? loc.movement_level + '/100'
-        : '—';
+      const movement = loc.movement_level !== null ? loc.movement_level + '/100' : '—';
 
       let cause = '—';
       if (loc.movement_level !== null) {
-        if (loc.movement_level < 30)      cause = 'Wind';
+        if      (loc.movement_level < 30) cause = 'Wind';
         else if (loc.movement_level < 60) cause = 'Rain / Soil Softening';
         else                              cause = 'Ground Instability';
       }
@@ -118,33 +133,31 @@ window.onload = function () {
     });
   }
 
-  // ── Update KPI cards ──
+  // ── KPI cards ──
   function updateKPI(locations) {
-    let atRisk   = 0;
-    let critical = 0;
-
+    let atRisk = 0, critical = 0;
     locations.forEach(loc => {
-      if ((loc.risk || '').toLowerCase() !== 'low') atRisk++;
+      if ((loc.risk || '').toLowerCase() !== 'low')   atRisk++;
       if ((loc.risk || '').toLowerCase() === 'high') critical++;
     });
-
     document.getElementById('totalTrees').textContent = locations.length;
     document.getElementById('atRisk').textContent     = atRisk;
     document.getElementById('critical').textContent   = critical;
   }
 
-  // ── Update alerts list (high risk only) ──
+  // ── Alerts (high risk only) ──
   function updateAlerts(locations) {
     const alertList = document.getElementById('alerts');
     const highRisk  = locations.filter(l => (l.risk || '').toLowerCase() === 'high');
-
-    if (highRisk.length === 0) return;
 
     highRisk.forEach(loc => {
       const existingIds = [...alertList.querySelectorAll('.alert-item')]
         .map(el => el.dataset.id);
 
       if (!existingIds.includes(String(loc.id))) {
+        const placeholder = alertList.querySelector('.no-alerts');
+        if (placeholder) placeholder.remove();
+
         const li = document.createElement('li');
         li.className  = 'alert-item';
         li.dataset.id = loc.id;
@@ -154,15 +167,11 @@ window.onload = function () {
           <span class="alert-time">${new Date().toLocaleTimeString()}</span>
         `;
         alertList.prepend(li);
-
-        const placeholder = alertList.querySelector('.no-alerts');
-        if (placeholder) placeholder.remove();
       }
     });
   }
 
-  // ── Initial load + poll every 5 seconds ──
-  fetchAndUpdate();
-  setInterval(fetchAndUpdate, 5000);
-
+  // ── Start: run immediately then every 5s ──
+  tick();
+  setInterval(tick, 5000);
 };
