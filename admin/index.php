@@ -450,14 +450,9 @@ $users = $conn->query("
                     <button class="btn btn-sm" onclick="viewUser(<?= $user['user_id'] ?>)">View</button>
 
                     <!-- Edit Role -->
-                    <button class="btn btn-sm" onclick="editUser(<?= $user['user_id'] ?>, '<?= $user['role'] ?>')">Edit</button>
-
+                    <button class="btn btn-sm" onclick="openEditModal(<?= $user['user_id'] ?>,'<?= htmlspecialchars($user['email']) ?>','<?= $user['role'] ?>')">Edit</button>
                     <!-- Reset Password -->
-                    <form method="POST" style="display:inline;">
-                        <input type="hidden" name="action" value="reset_password">
-                        <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
-                        <button type="submit" class="btn btn-warning btn-sm" onclick="return confirm('Reset password for <?= htmlspecialchars($user['first_name']) ?>?')">Reset PW</button>
-                    </form>
+                    
 
                     <!-- Delete -->
                     <form method="POST" style="display:inline;" onsubmit="return confirm('Delete <?= htmlspecialchars($user['first_name']) ?>?')">
@@ -471,7 +466,36 @@ $users = $conn->query("
         </tbody>
     </table>
 </div>
-  </div>
+
+<!-- Edit User Modal -->
+<div id="editUserModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);justify-content:center;align-items:center;">
+    <div style="background:#fff;padding:25px;border-radius:12px;width:400px;position:relative;box-shadow:0 4px 12px rgba(0,0,0,0.3);">
+        <h3 style="margin-bottom:15px;">Update User</h3>
+        <form method="POST" id="editUserForm">
+            <input type="hidden" name="action" value="edit_user">
+            <input type="hidden" name="user_id" id="modalUserId">
+
+            <label>Email:</label>
+            <input type="email" id="modalEmail" readonly style="width:100%;padding:8px;margin:5px 0 10px;background:#f0f0f0;border-radius:6px;">
+
+            <label>Password (leave empty to keep current):</label>
+            <input type="password" name="password" placeholder="New password if resetting" style="width:100%;padding:8px;margin:5px 0 10px;border-radius:6px;">
+
+            <label>Role:</label>
+            <select name="role" id="modalRole" style="width:100%;padding:8px;margin:5px 0 15px;border-radius:6px;">
+                <option value="user">User</option>
+                <option value="manager">Manager</option>
+                <option value="admin">Admin</option>
+            </select>
+
+            <div style="display:flex;justify-content:flex-end;gap:10px;">
+                <button type="button" class="btn btn-danger" onclick="closeEditModal()">Cancel</button>
+                <button type="submit" class="btn">Update User</button>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
        <script src="script.js"></script>
 </body>
 </html>
