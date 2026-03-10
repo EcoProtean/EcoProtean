@@ -99,7 +99,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $success = "User updated successfully.";
     }
 
-    
+    if ($action === 'add_user') {
+
+    $first = trim($_POST['first_name']);
+    $last  = trim($_POST['last_name']);
+    $email = trim($_POST['email']);
+    $role  = $_POST['role'];
+    $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+
+    $stmt = $conn->prepare("
+        INSERT INTO users (first_name,last_name,email,password,role)
+        VALUES (?,?,?,?,?)
+    ");
+
+    $stmt->bind_param("sssss",$first,$last,$email,$password,$role);
+    $stmt->execute();
+    $stmt->close();
+
+    $success = "User added successfully.";
+}    
 }
 // ── Fetch data for display ─────────────────────────────
 
