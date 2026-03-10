@@ -60,3 +60,11 @@ function closeEditModal() {
 function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+function openAddUserModal() {
+    document.getElementById("addUserModal").style.display = "flex";
+}
+
+function closeAddUserModal() {
+    document.getElementById("addUserModal").style.display = "none";
+}
