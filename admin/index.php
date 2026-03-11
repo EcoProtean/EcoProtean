@@ -494,6 +494,53 @@ background:rgba(0,0,0,0.6);justify-content:center;align-items:center;z-index:999
   </div>
 </div>
 
+<!-- Add Location Modal -->
+<div id="addLocationModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+background:rgba(0,0,0,0.6);justify-content:center;align-items:center;z-index:9999;">
+
+  <div style="background:#fff;padding:25px;border-radius:12px;width:450px;box-shadow:0 4px 12px rgba(0,0,0,0.3);">
+
+    <h3 style="margin-bottom:20px;">➕ Add New Sensor</h3>
+
+    <form method="POST">
+      <input type="hidden" name="action" value="add_location">
+
+      <label>Location Name</label>
+      <input type="text" name="location_name" placeholder="e.g. Forest Zone D" required
+      style="width:100%;padding:8px;margin:5px 0 10px;border-radius:6px;border:1px solid #ccc;">
+
+      <label>Risk Level</label>
+      <select name="risk_level"
+      style="width:100%;padding:8px;margin:5px 0 10px;border-radius:6px;border:1px solid #ccc;">
+        <option value="High">High</option>
+        <option value="Medium">Medium</option>
+        <option value="Low">Low</option>
+      </select>
+
+      <label>Latitude</label>
+      <input type="number" name="latitude" step="0.00000001"
+      placeholder="e.g. 8.45420000"
+      style="width:100%;padding:8px;margin:5px 0 10px;border-radius:6px;border:1px solid #ccc;">
+
+      <label>Longitude</label>
+      <input type="number" name="longitude" step="0.00000001"
+      placeholder="e.g. 124.63190000"
+      style="width:100%;padding:8px;margin:5px 0 10px;border-radius:6px;border:1px solid #ccc;">
+
+      <label>Description</label>
+      <textarea name="description"
+      placeholder="Describe the environmental risk…"
+      style="width:100%;padding:8px;margin:5px 0 15px;border-radius:6px;border:1px solid #ccc;"></textarea>
+
+      <div style="display:flex;justify-content:flex-end;gap:10px;">
+        <button type="button" class="btn btn-danger" onclick="closeAddLocationModal()">Cancel</button>
+        <button type="submit" class="btn">Add Location</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
 <!-- View User Modal -->
 <div id="viewUserModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);justify-content:center;align-items:center;z-index:9999;">
   <div style="background:#fff;padding:25px;border-radius:12px;width:450px;position:relative;box-shadow:0 4px 12px rgba(0,0,0,0.3);font-family:'Poppins',sans-serif;">
