@@ -38,7 +38,7 @@ if (!empty($_SESSION['user_id'])) {
             <img src="../Photo logo/exit.png" alt="Logout" class="nav-icon">
           </a></li>
         <?php else: ?>
-          <li><a href="../../login.php">Login</a></li>
+          <li><a href="/EcoProtean/auth/login.php">Login</a></li>
         <?php endif; ?>
       </ul>
     </nav>
