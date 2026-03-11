@@ -301,7 +301,7 @@ $users = $conn->query("
 
   <!-- Locations Table -->
   <div class="section">
-    <h2>📍 Locations</h2>
+    <h2>📍 Sensor Locations</h2>
     <table>
       <thead>
         <tr>
@@ -327,7 +327,7 @@ $users = $conn->query("
         <?php endforeach; ?>
       </tbody>
     </table>
-        <button class="btn" onclick="openAddLocationModal()">➕ Add Location</button>
+        <button class="btn" onclick="openAddLocationModal()">➕ Add Sensor Location</button>
   </div>
 
   <!-- Add Tree Recommendation -->
