@@ -299,42 +299,6 @@ $users = $conn->query("
     </div>
   </div>
 
-  <!-- Add Location -->
-  <div class="section">
-    <h2>➕ Add New Sensor</h2>
-    <form method="POST">
-      <input type="hidden" name="action" value="add_location">
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Location Name</label>
-          <input type="text" name="location_name" placeholder="e.g. Forest Zone D" required>
-        </div>
-        <div class="form-group">
-          <label>Risk Level</label>
-          <select name="risk_level" required>
-            <option value="High">High</option>
-            <option value="Medium">Medium</option>
-            <option value="Low">Low</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Latitude</label>
-          <input type="number" name="latitude" step="0.00000001" placeholder="e.g. 8.45420000" required>
-        </div>
-        <div class="form-group">
-          <label>Longitude</label>
-          <input type="number" name="longitude" step="0.00000001" placeholder="e.g. 124.63190000" required>
-        </div>
-        <div class="form-group full">
-          <label>Description</label>
-          <textarea name="description" placeholder="Describe the environmental risk…" required></textarea>
-        </div>
-      </div>
-      <br>
-      <button type="submit" class="btn">Add Location</button>
-    </form>
-  </div>
-
   <!-- Locations Table -->
   <div class="section">
     <h2>📍 Locations</h2>
