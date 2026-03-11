@@ -30,11 +30,8 @@ if (!empty($_SESSION['user_id'])) {
       <ul>
         <li><a href="../RiskMap/index.php">Risk Map</a></li>
         <li><a class="active" href="../About/">About</a></li>
-        <?php if (!empty($_SESSION['role']) && in_array($_SESSION['role'], ['admin','manager'])): ?>
-          <li><a href="../../admin/index.php">Admin</a></li>
-        <?php endif; ?>
         <?php if (!empty($_SESSION['user_id'])): ?>
-          <li><a href="../../logout.php" class="icon-link">
+          <li><a href="/EcoProtean/auth/logout.php" class="icon-link">
             <img src="../Photo logo/exit.png" alt="Logout" class="nav-icon">
           </a></li>
         <?php else: ?>
