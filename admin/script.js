@@ -52,6 +52,14 @@ function openEditFromView() {
     document.getElementById('editUserModal').style.display = 'flex';
 }
 
+function openAddLocationModal() {
+    document.getElementById("addLocationModal").style.display = "flex";
+}
+
+function closeAddLocationModal() {
+    document.getElementById("addLocationModal").style.display = "none";
+}
+
 // Close Edit Modal
 function closeEditModal() {
     document.getElementById('editUserModal').style.display = 'none';
@@ -68,3 +76,4 @@ function openAddUserModal() {
 function closeAddUserModal() {
     document.getElementById("addUserModal").style.display = "none";
 }
+
