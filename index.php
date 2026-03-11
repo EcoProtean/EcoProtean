@@ -29,12 +29,9 @@ if (!empty($_SESSION['user_id'])) {
         </div>
       </div>
       <ul>
-        <li><a class="active" href="Web App/Risk Map/index.php">Risk Map</a></li>
-        <li><a href="Web App/About/index.php">About</a></li>
+        <li><a class="active" href="/EcoProtean/WebApp/RiskMap/index.php">Risk Map</a></li>
+        <li><a href="/EcoProtean/WebApp/About/index.php">About</a></li>
         <?php if (isLoggedIn()): ?>
-          <?php if (in_array($_SESSION['role'], ['admin','manager'])): ?>
-            <li><a href="admin/index.php">Admin</a></li>
-          <?php endif; ?>
           <li><a href="/EcoProtean/auth/logout.php" class="icon-link">
             <img src="Photo logo/exit.png" alt="Logout" class="nav-icon">
           </a></li>

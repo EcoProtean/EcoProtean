@@ -301,7 +301,7 @@ $users = $conn->query("
 
   <!-- Add Location -->
   <div class="section">
-    <h2>➕ Add New Location</h2>
+    <h2>➕ Add New Sensor</h2>
     <form method="POST">
       <input type="hidden" name="action" value="add_location">
       <div class="form-grid">
