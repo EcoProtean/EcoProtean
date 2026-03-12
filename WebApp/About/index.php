@@ -21,7 +21,7 @@ if (!empty($_SESSION['user_id'])) {
   <header>
     <nav>
       <div class="logo">
-        <img src="../Photo logo/EcoProteous logo.jpg" alt="EcoProtean Logo">
+        <img src="../Photo logo/EcoProteous logo.png" alt="EcoProtean Logo">
         <div class="logo-content">
           <span class="logo-text">EcoProtean</span>
           <span class="tagline">Guarding the Land, Growing the Future</span>
