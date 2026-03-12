@@ -58,7 +58,7 @@ if (!empty($_SESSION['user_id'])) {
           <p>Our focus is on preventing landslides from occurring. Our services provide an interactive map that highlights landslide-prone areas in <strong>Manolo Fortich</strong>, along with a comprehensive list of seedlings ideal for planting in vulnerable areas.</p>
         </div>
         <div class="mission-image">
-          <img src="../Photo logo/EcoProteous logo.jpg" alt="EcoProtean Logo">
+          <img src="../Photo logo/EcoProteous logo.png" alt="EcoProtean Logo">
         </div>
       </div>
     </section>
