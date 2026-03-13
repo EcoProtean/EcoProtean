@@ -36,7 +36,7 @@ define('DB_NAME', 'ecoprotean');
 ## Step 4 — Run the app
 Open your browser and go to:
 ```
-http://localhost/ecoproteau/
+http://localhost/ecoprotean/
 ```
 
 ---
