@@ -45,8 +45,8 @@ http://localhost/ecoprotean/
 | Role    | Email                      | Password      |
 |---------|----------------------------|---------------|
 | Admin   | admin@ecoprotean.com       | password123   |
-| Manager | manager@ecoprotean.com     | password1234  |
-| User    | user@ecoprotean.com        | password12345 |
+| Manager | manager@ecoprotean.com     | password123  |
+| User    | user@ecoprotean.com        | password123 |
 
 ---
 
