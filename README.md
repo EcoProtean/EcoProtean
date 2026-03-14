@@ -17,7 +17,7 @@
 
 ## Step 2 — Copy project to XAMPP
 1. Copy the entire `ecoprotean` folder into:
-   - **Windows:** `C:\xampp\htdocs\ecoproteau`
+   - **Windows:** `C:\xampp\htdocs\ecoprotean`
    - **Mac/Linux:** `/opt/lampp/htdocs/ecoproteau`
 
 ---
