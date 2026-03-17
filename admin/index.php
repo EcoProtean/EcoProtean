@@ -263,7 +263,7 @@ $users = $conn->query("
     <span>Admin Panel</span>
   </div>
   <a href="../admin/index.php" class="active">📊 Dashboard</a>
-  <a href= " "></a>
+  <a href= " ">User Management</a>
   <div class="logout">
     <a href="../auth/logout.php">🚪 Logout (<?= htmlspecialchars($_SESSION['full_name']) ?>)</a>
   </div>
