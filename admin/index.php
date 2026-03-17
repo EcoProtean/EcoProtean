@@ -354,8 +354,6 @@ $users = $conn->query("
           <textarea name="reason" placeholder="Why is this tree recommended for this location?" required></textarea>
         </div>
       </div>
-      <br>
-      <button type="submit" class="btn">Add Recommendation</button>
     </form>
   </div>
 
