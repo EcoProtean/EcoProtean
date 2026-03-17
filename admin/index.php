@@ -327,7 +327,6 @@ $users = $conn->query("
         <?php endforeach; ?>
       </tbody>
     </table>
-        <button class="btn" onclick="openAddLocationModal()">➕ Add Sensor Location</button>
   </div>
 
   <!-- Add Tree Recommendation -->
