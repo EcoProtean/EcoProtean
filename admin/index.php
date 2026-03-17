@@ -329,34 +329,6 @@ $users = $conn->query("
     </table>
   </div>
 
-  <!-- Add Tree Recommendation -->
-  <div class="section">
-    <h2>🌱 Add Tree Recommendation</h2>
-    <form method="POST">
-      <input type="hidden" name="action" value="add_recommendation">
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Location</label>
-          <select name="location_id" required>
-            <?php foreach ($locations as $loc): ?>
-              <option value="<?= $loc['location_id'] ?>">
-                <?= htmlspecialchars($loc['location_name']) ?> (<?= $loc['risk_level'] ?>)
-              </option>
-            <?php endforeach; ?>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Tree Name</label>
-          <input type="text" name="tree_name" placeholder="e.g. Narra" required>
-        </div>
-        <div class="form-group full">
-          <label>Reason</label>
-          <textarea name="reason" placeholder="Why is this tree recommended for this location?" required></textarea>
-        </div>
-      </div>
-    </form>
-  </div>
-
   <!-- Recent Recommendations -->
   <div class="section">
     <h2>🌳 Recent Tree Recommendations</h2>
