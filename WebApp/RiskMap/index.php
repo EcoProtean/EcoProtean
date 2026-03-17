@@ -36,10 +36,9 @@ if (!empty($_SESSION['user_id'])) {
           <li><a href="../../admin/index.php">Admin</a></li>
         <?php endif; ?>
         <?php if (!empty($_SESSION['user_id'])): ?>
-          <li><a href="/EcoProtean/auth/logout.php" class="icon-link">
-            <img src="../Photo logo/exit.png" alt="Logout" class="nav-icon">
+           <li><a href="/EcoProtean/auth/logout.php">Logout</a></li>
           </a></li>
-        <?php else: ?>
+        <?php else: ?>  
           <li><a href="/EcoProtean/auth/login.php">Login</a></li>
         <?php endif; ?>
       </ul>
