@@ -19,6 +19,7 @@ if (!empty($_SESSION['user_id'])) {
   <title>About - EcoProtean</title>
 </head>
 
+
 <body>
   <header>
     <nav>
