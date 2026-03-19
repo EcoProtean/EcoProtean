@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } elseif ($user['role'] === 'manager') {
                 header('Location: ../management/index.php');
             } else {
-                header('Location: ../webapp/riskmap/index.php');
+                header('Location: ../app/riskmap/index.php');
             }
             exit;
         } else {

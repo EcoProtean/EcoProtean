@@ -8,6 +8,6 @@ if (!empty($_SESSION['user_id'])) {
 }
 
 // Redirect to Risk Map as the default page
-header("Location: /ecoprotean/webapp/riskmap/index.php");
+header("Location: /ecoprotean/app/riskmap/index.php");
 exit();
 ?>
