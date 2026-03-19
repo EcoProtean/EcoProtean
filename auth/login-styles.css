@@ -159,10 +159,6 @@ body::before {
     stroke-linejoin: round;
 }
 
-.toggle-password svg.hidden {
-    display: none !important;
-}
-
 .form-group input:focus {
     outline: none;
     border-color: #4CAF50;
