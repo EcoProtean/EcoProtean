@@ -159,6 +159,10 @@ body::before {
     stroke-linejoin: round;
 }
 
+input[type="password"]::-ms-reveal {
+    display: none !important;
+}
+
 .form-group input:focus {
     outline: none;
     border-color: #4CAF50;
