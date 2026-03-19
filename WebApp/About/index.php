@@ -3,11 +3,12 @@ session_start();
 require_once '../../config.php';
 
 if (!empty($_SESSION['user_id'])) {
-    logActivity($conn, $_SESSION['user_id'], 'VIEW_ABOUT', 'Viewed about page');
+  logActivity($conn, $_SESSION['user_id'], 'VIEW_ABOUT', 'Viewed about page');
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,6 +18,7 @@ if (!empty($_SESSION['user_id'])) {
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <title>About - EcoProtean</title>
 </head>
+
 <body>
   <header>
     <nav>
@@ -31,9 +33,8 @@ if (!empty($_SESSION['user_id'])) {
         <li><a href="../RiskMap/index.php">Risk Map</a></li>
         <li><a class="active" href="../About/">About</a></li>
         <?php if (!empty($_SESSION['user_id'])): ?>
-          <li><a href="/ecoprotean/auth/logout.php" class="icon-link">
-            <li><a href="/ecoprotean/auth/logout.php">Logout</a></li>
-          </a></li>
+          <li><a href="/{PREFIX}/auth/logout.php">Logout</a></li>
+
         <?php else: ?>
           <li><a href="/ecoprotean/auth/login.php">Login</a></li>
         <?php endif; ?>
@@ -148,4 +149,5 @@ if (!empty($_SESSION['user_id'])) {
     <p><a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
   </footer>
 </body>
+
 </html>
