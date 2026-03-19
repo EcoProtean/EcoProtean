@@ -217,6 +217,7 @@ $users = $conn->query("
     <!-- Locations Table -->
     <div class="section">
       <h2>📍 Sensor Locations</h2>
+      <div class="table-wrap">
       <table>
         <thead>
           <tr>
@@ -247,11 +248,14 @@ $users = $conn->query("
           <?php endforeach; ?>
         </tbody>
       </table>
+          </div>
     </div>
 
     <!-- Recent Recommendations -->
     <div class="section">
       <h2>🌳 Recent Tree Recommendations</h2>
+
+      <div class="table-wrap">
       <table>
         <thead>
           <tr>
@@ -274,12 +278,14 @@ $users = $conn->query("
           <?php endforeach; ?>
         </tbody>
       </table>
+          </div>
     </div>
 
     <!-- Activity Logs -->
     <div class="section">
       <h2>📋 Recent Activity Logs</h2>
       <div class="table-scroll">
+        <div class="table-wrap">
         <table>
           <thead>
             <tr>
@@ -304,11 +310,13 @@ $users = $conn->query("
             <?php endforeach; ?>
           </tbody>
         </table>
+        </div>
       </div>
     </div>
 
     <div class="section">
       <h2>👥 User Management</h2>
+      <div class="table-wrap">
       <table>
         <thead>
           <tr>
@@ -350,6 +358,8 @@ $users = $conn->query("
           <?php endforeach; ?>
         </tbody>
       </table>
+
+          </div>
       <br>
 
       <button class="btn" onclick="openAddUserModal()">➕ Add User</button>
