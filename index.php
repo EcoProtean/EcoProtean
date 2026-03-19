@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'config.php';
+require_once 'config/config.php';
 
 // Log page view if logged in
 if (!empty($_SESSION['user_id'])) {
@@ -8,6 +8,6 @@ if (!empty($_SESSION['user_id'])) {
 }
 
 // Redirect to Risk Map as the default page
-header("Location: /ecoprotean/WebApp/RiskMap/index.php");
+header("Location: /ecoprotean/webapp/riskmap/index.php");
 exit();
 ?>
