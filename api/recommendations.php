@@ -16,12 +16,17 @@ if (!$location_id) {
 }
 
 $stmt = $conn->prepare(
-    "SELECT tr.tree_name, tr.reason, u.full_name AS recommended_by, tr.created_at
+    "SELECT 
+        tr.tree_name, 
+        tr.reason, 
+        CONCAT(u.first_name, ' ', u.last_name) AS recommended_by, 
+        tr.created_at
      FROM tree_recommendations tr
      JOIN users u ON tr.recommended_by = u.user_id
      WHERE tr.location_id = ?
      ORDER BY tr.created_at DESC"
 );
+
 $stmt->bind_param('i', $location_id);
 $stmt->execute();
 $result = $stmt->get_result();
