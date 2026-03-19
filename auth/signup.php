@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../config.php';
+require_once '../config/config.php';
 
 $error = '';
 $success = '';
@@ -61,13 +61,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EcoProtean - Sign Up</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../assets/css/signup.css">
 </head>
 <body>
     <div class="signup-container">
         <div class="logo-container">
              <!-- Insert logo here -->
-            <img src="../photo/EcoProteous logo.png" alt="EPP Logo" id="logoImage">
+            <img src="../assets/images/logo.png">
         </div>
         
         <div class="signup-header">
@@ -163,6 +163,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="../assets/js/signup.js"></script>
 </body>
 </html>

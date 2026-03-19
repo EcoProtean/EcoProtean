@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../../config.php';
+require_once '../../config/config.php';
 
 if (!empty($_SESSION['user_id'])) {
   logActivity($conn, $_SESSION['user_id'], 'VIEW_ABOUT', 'Viewed about page');
@@ -12,7 +12,7 @@ if (!empty($_SESSION['user_id'])) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../../assets/css/about.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -23,15 +23,15 @@ if (!empty($_SESSION['user_id'])) {
   <header>
     <nav>
       <div class="logo">
-        <img src="../Photo logo/EcoProteous logo.png" alt="EcoProtean Logo">
+        <img src="../../assets/images/logo.png">
         <div class="logo-content">
           <span class="logo-text">EcoProtean</span>
           <span class="tagline">Guarding the Land, Growing the Future</span>
         </div>
       </div>
       <ul>
-        <li><a href="../RiskMap/index.php">Risk Map</a></li>
-        <li><a class="active" href="../About/">About</a></li>
+        <li><a class="active" href="../riskmap/index.php">Risk Map</a></li>
+        <li><a class="active" href="../about/">About</a></li>
         <?php if (!empty($_SESSION['user_id'])): ?>
           <li><a href="/{PREFIX}/auth/logout.php">Logout</a></li>
 
@@ -59,7 +59,7 @@ if (!empty($_SESSION['user_id'])) {
           <p>Our focus is on preventing landslides from occurring. Our services provide an interactive map that highlights landslide-prone areas in <strong>Manolo Fortich</strong>, along with a comprehensive list of seedlings ideal for planting in vulnerable areas.</p>
         </div>
         <div class="mission-image">
-          <img src="../Photo logo/EcoProteous logo.png" alt="EcoProtean Logo">
+          <img src="../../assets/images/logo.png">
         </div>
       </div>
     </section>
@@ -109,7 +109,7 @@ if (!empty($_SESSION['user_id'])) {
       <p class="team-intro">Four passionate individuals committed to environmental innovation</p>
       <div class="team-grid">
         <div class="team-member">
-          <div class="member-photo"><img src="../Photo logo/Person-Icon.webp" alt="Kent Ryan L. Pagongpong"></div>
+          <div class="member-photo"><img src="../../assets/images/person-icon.webp" alt="Kent Ryan L. Pagongpong"></div>
           <div class="member-info">
             <h3>Kent Ryan L. Pagongpong</h3>
             <p class="role">Co-Founder & CEO</p>
@@ -117,7 +117,7 @@ if (!empty($_SESSION['user_id'])) {
           </div>
         </div>
         <div class="team-member">
-          <div class="member-photo"><img src="../Photo logo/Person-Icon.webp" alt="Katelyn L. Coming"></div>
+          <div class="member-photo"><img src="../../assets/images/person-icon.webp" alt="Katelyn L. Coming"></div>
           <div class="member-info">
             <h3>Katelyn L. Coming</h3>
             <p class="role">Co-Founder & CTO</p>
@@ -125,7 +125,7 @@ if (!empty($_SESSION['user_id'])) {
           </div>
         </div>
         <div class="team-member">
-          <div class="member-photo"><img src="../Photo logo/Person-Icon.webp" alt="Jane Justine T. Catingan"></div>
+          <div class="member-photo"><img src="../../assets/images/person-icon.webp" alt="Jane Justine T. Catingan"></div>
           <div class="member-info">
             <h3>Jane Justine T. Catingan</h3>
             <p class="role">Co-Founder & COO</p>
@@ -133,7 +133,7 @@ if (!empty($_SESSION['user_id'])) {
           </div>
         </div>
         <div class="team-member">
-          <div class="member-photo"><img src="../Photo logo/Person-Icon.webp" alt="Antony C. Canete"></div>
+          <div class="member-photo"><img src="../../assets/images/person-icon.webp" alt="Antony C. Canete"></div>
           <div class="member-info">
             <h3>Antony C. Canete</h3>
             <p class="role">Co-Founder & CFO</p>

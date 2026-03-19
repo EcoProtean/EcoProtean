@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../../config.php';
+require_once '../../config/config.php';
 
 if (!empty($_SESSION['user_id'])) {
     logActivity($conn, $_SESSION['user_id'], 'VIEW_RISKMAP', 'Viewed risk map');
@@ -11,7 +11,7 @@ if (!empty($_SESSION['user_id'])) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../../assets/css/riskmap.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -23,15 +23,15 @@ if (!empty($_SESSION['user_id'])) {
   <header>
     <nav>
       <div class="logo">
-        <img src="../Photo logo/EcoProteous logo.png" alt="EcoProtean Logo">
+        <img src="../../assets/images/logo.png">
         <div class="logo-content">
           <span class="logo-text">EcoProtean</span>
           <span class="tagline">Guarding the Land, Growing the Future</span>
         </div>
       </div>
       <ul>
-        <li><a class="active" href="../RiskMap/index.php">Risk Map</a></li>
-        <li><a href="../About/index.php">About</a></li>
+        <li><a class="active" href="../riskMap/index.php">Risk Map</a></li>
+        <li><a href="../about/index.php">About</a></li>
         <?php if (!empty($_SESSION['role']) && in_array($_SESSION['role'], ['admin','manager'])): ?>
           <li><a href="../../admin/index.php">Admin</a></li>
         <?php endif; ?>
@@ -56,6 +56,6 @@ if (!empty($_SESSION['user_id'])) {
 
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="services.js"></script>
+  <script src="../../assets/js/riskmap.js"></script>
 </body>
 </html>
