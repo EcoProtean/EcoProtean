@@ -84,7 +84,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 recs.forEach(r => {
                   html += `<li style="margin-bottom:4px;">
                     <strong>${r.tree_name}</strong> — ${r.reason}
-                    <br><small style="color:#aaa;">by ${r.recommended_by}</small>
                   </li>`;
                 });
                 html += '</ul>';
