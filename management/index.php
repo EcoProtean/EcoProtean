@@ -4,19 +4,19 @@ require_once '../config/config.php';
 
 // ── Role Protection: only manager and admin ──
 if (empty($_SESSION['user_id'])) {
-    header('Location: ../login.php');
-    exit;
+  header('Location: ../login.php');
+  exit;
 }
 if (!in_array($_SESSION['role'], ['manager', 'admin'])) {
-    header('Location: ../index.php');
-    exit;
+  header('Location: ../index.php');
+  exit;
 }
 
 logActivity($conn, $_SESSION['user_id'], 'VIEW_DASHBOARD', 'Viewed manager dashboard');
 
 // ── Fetch sensors + their locations from DB ──
 $result = $conn->query(
-    "SELECT s.sensor_id, s.sensor_type, s.location_id,
+  "SELECT s.sensor_id, s.sensor_type, s.location_id,
             l.location_name, l.latitude, l.longitude, l.risk_level,
             (SELECT sd.movement_level
              FROM simulation_data sd
@@ -29,12 +29,12 @@ $result = $conn->query(
 
 $sensors = [];
 while ($row = $result->fetch_assoc()) {
-    $sensors[] = $row;
+  $sensors[] = $row;
 }
 
 // ── Fetch recent alerts (High risk simulation entries) ──
 $alerts = $conn->query(
-    "SELECT sd.movement_level, sd.timestamp, l.location_name
+  "SELECT sd.movement_level, sd.timestamp, l.location_name
      FROM simulation_data sd
      JOIN sensors s ON sd.sensor_id = s.sensor_id
      JOIN locations l ON s.location_id = l.location_id
@@ -48,23 +48,27 @@ $total  = count($sensors);
 $atRisk   = 0;
 $critical = 0;
 foreach ($sensors as $s) {
-    $m = (float)($s['last_movement'] ?? 0);
-    if ($m >= 30) $atRisk++;
-    if ($m >= 60) $critical++;
+  $m = (float)($s['last_movement'] ?? 0);
+  if ($m >= 30) $atRisk++;
+  if ($m >= 60) $critical++;
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Manager Dashboard - EcoProtean</title>
   <link rel="stylesheet" href="../assets/css/management.css">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
+  <button class="menu-toggle" id="menuToggle">☰</button>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
   <!-- ── Sidebar Nav ── -->
   <aside class="sidebar">
@@ -74,7 +78,7 @@ foreach ($sensors as $s) {
     </div>
     <nav class="sidenav">
       <a href="index.php" class="active">📊 Dashboard</a>
-    
+
     </nav>
     <div class="sidebar-footer">
       <div class="user-info">
@@ -156,4 +160,5 @@ foreach ($sensors as $s) {
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="../assets/js/management.js"></script>
 </body>
+
 </html>
