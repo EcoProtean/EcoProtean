@@ -1,0 +1,154 @@
+<?php
+session_start();
+require_once '../../config/config.php';
+
+if (!empty($_SESSION['user_id'])) {
+  logActivity($conn, $_SESSION['user_id'], 'VIEW_ABOUT', 'Viewed about page');
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../../assets/css/about.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <title>About - EcoProtean</title>
+</head>
+
+
+<body>
+  <header>
+    <nav>
+      <div class="logo">
+        <img src="../../assets/images/logo.png">
+        <div class="logo-content">
+          <span class="logo-text">EcoProtean</span>
+          <span class="tagline">Guarding the Land, Growing the Future</span>
+        </div>
+      </div>
+      <ul>
+        <li><a class="active" href="../riskmap/index.php">Risk Map</a></li>
+        <li><a class="active" href="../about/">About</a></li>
+        <?php if (!empty($_SESSION['user_id'])): ?>
+          <li><a href="/{PREFIX}/auth/logout.php">Logout</a></li>
+
+        <?php else: ?>
+          <li><a href="/ecoprotean/auth/login.php">Login</a></li>
+        <?php endif; ?>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1>About EcoProtean</h1>
+      <p>Building a sustainable future through innovation and environmental stewardship</p>
+    </div>
+  </section>
+
+  <div class="content">
+    <!-- Mission Section -->
+    <section class="mission-section">
+      <div class="mission-container">
+        <div class="mission-text">
+          <h2>Our Mission</h2>
+          <p>EcoProtean Proteus embodies a powerful combination of ecological responsibility, adaptability, and mythological strength to address today's most pressing environmental challenges such as floods and landslides.</p>
+          <p>Our focus is on preventing landslides from occurring. Our services provide an interactive map that highlights landslide-prone areas in <strong>Manolo Fortich</strong>, along with a comprehensive list of seedlings ideal for planting in vulnerable areas.</p>
+        </div>
+        <div class="mission-image">
+          <img src="../../assets/images/logo.png">
+        </div>
+      </div>
+    </section>
+
+    <!-- What We Stand For -->
+    <section class="values-section">
+      <h2>What EcoProtean Proteus Represents</h2>
+      <div class="values-grid">
+        <div class="value-card">
+          <div class="value-icon">🌿</div>
+          <h3>Ecological Responsibility</h3>
+          <p>Committed to sustainable practices that safeguard our planet's future through environmental stewardship and conservation.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🔄</div>
+          <h3>Flexibility & Adaptability</h3>
+          <p>Responding dynamically to the evolving landscape of environmental issues with innovative solutions.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">⚡</div>
+          <h3>Strength & Transformation</h3>
+          <p>Harnessing the power of change to drive sustainability and lead in ecological solutions.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SDG Section -->
+    <section class="sdg-section">
+      <h2>Aligned with United Nations SDGs</h2>
+      <div class="sdg-container">
+        <div class="sdg-card">
+          <div class="sdg-number">13</div>
+          <h3>Climate Action</h3>
+          <p>Taking urgent action to combat climate change and its impacts through innovative environmental solutions.</p>
+        </div>
+        <div class="sdg-card">
+          <div class="sdg-number">15</div>
+          <h3>Life on Land</h3>
+          <p>Protecting, restoring, and promoting sustainable ecosystems by monitoring tree stability, preventing land degradation, and supporting reforestation efforts.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team-section">
+      <h2>Meet Our Team</h2>
+      <p class="team-intro">Four passionate individuals committed to environmental innovation</p>
+      <div class="team-grid">
+        <div class="team-member">
+          <div class="member-photo"><img src="../../assets/images/person-icon.webp" alt="Kent Ryan L. Pagongpong"></div>
+          <div class="member-info">
+            <h3>Kent Ryan L. Pagongpong</h3>
+            <p class="role">Co-Founder & CEO</p>
+            <p class="description">Oversees the strategic direction of EcoProtean Proteus, ensuring we fulfill our mission of ecological responsibility and sustainability.</p>
+          </div>
+        </div>
+        <div class="team-member">
+          <div class="member-photo"><img src="../../assets/images/person-icon.webp" alt="Katelyn L. Coming"></div>
+          <div class="member-info">
+            <h3>Katelyn L. Coming</h3>
+            <p class="role">Co-Founder & CTO</p>
+            <p class="description">Leads the technology development efforts, ensuring our mapping systems and services run smoothly and effectively.</p>
+          </div>
+        </div>
+        <div class="team-member">
+          <div class="member-photo"><img src="../../assets/images/person-icon.webp" alt="Jane Justine T. Catingan"></div>
+          <div class="member-info">
+            <h3>Jane Justine T. Catingan</h3>
+            <p class="role">Co-Founder & COO</p>
+            <p class="description">Handles day-to-day operations, ensuring our services are delivered efficiently while maintaining our commitment to sustainability.</p>
+          </div>
+        </div>
+        <div class="team-member">
+          <div class="member-photo"><img src="../../assets/images/person-icon.webp" alt="Antony C. Canete"></div>
+          <div class="member-info">
+            <h3>Antony C. Canete</h3>
+            <p class="role">Co-Founder & CFO</p>
+            <p class="description">Manages financial strategy and resources, ensuring sustainable growth and responsible investment in environmental solutions.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <p>&copy; 2024 EcoProtean Proteus | All Rights Reserved</p>
+    <p><a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+  </footer>
+</body>
+
+</html>
