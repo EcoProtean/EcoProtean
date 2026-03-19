@@ -76,7 +76,7 @@ $savedEmail = $_COOKIE['user_email'] ?? '';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EcoProtean - Login</title>
-    <link rel="stylesheet" href="login-styles.css">
+    <link rel="stylesheet" href="login-style.css">
 </head>
 <body>
     <div class="login-container">
