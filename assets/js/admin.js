@@ -1,3 +1,24 @@
+
+        // ── Sidebar mobile toggle ──
+        // Add this at the top of admin.js AND management.js
+
+        (function () {
+        const toggle   = document.getElementById('menuToggle');
+        const sidebar  = document.querySelector('.sidebar');
+        const overlay  = document.getElementById('sidebarOverlay');
+
+        if (!toggle || !sidebar || !overlay) return;
+
+        toggle.addEventListener('click', function () {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        });
+
+        overlay.addEventListener('click', function () {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        });
+        })();
 // Wait until the page is loaded
 document.addEventListener('DOMContentLoaded', function() {
     const msg = document.getElementById('successMessage');
