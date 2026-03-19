@@ -7,7 +7,7 @@ header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 
 // Go up two levels to reach config.php from api/
-require_once dirname(__DIR__) . '/config.php';
+require_once dirname(__DIR__) . '/config/config.php';
 
 $result = $conn->query(
     "SELECT

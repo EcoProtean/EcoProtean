@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../config.php';
+require_once '../config/config.php';
 requireLogin();
 
 // Only admin and manager can access
@@ -158,6 +158,7 @@ $users = $conn->query("
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../assets/css/admin.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -511,6 +512,6 @@ background:rgba(0,0,0,0.6);justify-content:center;align-items:center;z-index:999
   </div>
 </div>
 </div>
-       <script src="script.js"></script>
+       <script src="../assets/js/admin.js"></script>
 </body>
 </html>

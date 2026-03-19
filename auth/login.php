@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../config.php';
+require_once '../config/config.php';
 
 $error = '';
 
@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } elseif ($user['role'] === 'manager') {
                 header('Location: ../management/index.php');
             } else {
-                header('Location: ../WebApp/RiskMap/index.php');
+                header('Location: ../webapp/riskmap/index.php');
             }
             exit;
         } else {
@@ -76,13 +76,13 @@ $savedEmail = $_COOKIE['user_email'] ?? '';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EcoProtean - Login</title>
-    <link rel="stylesheet" href="login-styles.css">
+    <link rel="stylesheet" href="../assets/css/login.css">
 </head>
 <body>
     <div class="login-container">
         <div class="logo-container">
             <!-- Insert your EPP logo here -->
-            <img src="../Photo logo/EcoProteous logo.png" alt="EPP Logo" id="logoImage">
+            <img src="../assets/images/logo.png">
         </div>
         
         <div class="login-header">
@@ -145,6 +145,6 @@ $savedEmail = $_COOKIE['user_email'] ?? '';
         </div>
     </div>
 
-    <script src="login-script.js"></script>
+    <script src="../assets/js/login.js"></script>
 </body>
 </html>
