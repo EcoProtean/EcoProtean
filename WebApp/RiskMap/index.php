@@ -36,10 +36,10 @@ if (!empty($_SESSION['user_id'])) {
           <li><a href="../../admin/index.php">Admin</a></li>
         <?php endif; ?>
         <?php if (!empty($_SESSION['user_id'])): ?>
-           <li><a href="/EcoProtean/auth/logout.php">Logout</a></li>
+           <li><a href="/ecoprotean/auth/logout.php">Logout</a></li>
           </a></li>
         <?php else: ?>  
-          <li><a href="/EcoProtean/auth/login.php">Login</a></li>
+          <li><a href="/ecoprotean/auth/login.php">Login</a></li>
         <?php endif; ?>
       </ul>
     </nav>
