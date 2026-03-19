@@ -1,87 +1,63 @@
-# EcoProtean - PHP Setup Guide
+#Updated Project Structure 03/19/2026 11:26PM
 
-## Requirements
-- XAMPP (Apache + MySQL + PHP 8+)
-- A browser
-
----
-
-## Step 1 — Set up the Database
-1. Open **phpMyAdmin**: http://localhost/phpmyadmin
-2. Click **"New"** in the left sidebar
-3. Name the database: `ecoprotean` → click **Create**
-4. Click the **SQL** tab
-5. Paste the contents of your existing `database.sql` and click **Go**
-
----
-
-## Step 2 — Copy project to XAMPP
-1. Copy the entire `ecoprotean` folder into:
-   - **Windows:** `C:\xampp\htdocs\ecoprotean`
-   - **Mac/Linux:** `/opt/lampp/htdocs/ecoprotean`
-
----
-
-## Step 3 — Configure database connection
-Open `config.php` and confirm these match your setup:
-```php
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');        // Leave empty for default XAMPP
-define('DB_NAME', 'ecoprotean');
-```
-
----
-
-## Step 4 — Run the app
-Open your browser and go to:
-```
-http://localhost/ecoprotean/
-```
-
----
-
-## Login Credentials (from sample data)
-| Role    | Email                      | Password      |
-|---------|----------------------------|---------------|
-| Admin   | admin@ecoprotean.com       | password123   |
-| Manager | manager@ecoprotean.com     | password123  |
-| User    | user@ecoprotean.com        | password123 |
-
----
-
-## File Structure
-```
-ecoproteau/
-├── config.php              ← DB connection + helper functions
-├── index.php               ← Home page
-├── login.php               ← Login page
-├── logout.php              ← Logout
-├── style.css               ← Root styles
-├── database.sql            ← Your original schema (unchanged)
-├── api/
-│   ├── locations.php       ← API: returns map markers from DB
-│   └── recommendations.php ← API: returns tree recommendations
+ecoprotean/
 ├── admin/
-│   └── index.php           ← Admin/Manager dashboard
-└── Web App/
-    ├── Risk Map/
-    │   ├── index.php       ← Risk Map page
-    │   ├── services.js     ← Updated: fetches from DB via API
-    │   └── style.css       ← (copy your original riskmap style.css here)
-    └── About/
-        ├── index.php       ← About page
-        └── style.css       ← (copy your original about style.css here)
-```
-
----
-
-## What changed from the original HTML version
-| Before (Electron/HTML)         | After (PHP + MySQL)                         |
-|-------------------------------|---------------------------------------------|
-| `main.js` + `preload.js`      | Removed — not needed for web                |
-| Hardcoded risk areas in JS    | Loaded from `locations` table via API       |
-| No login system               | Full login with session + role check        |
-| No activity tracking          | Every page visit logged to `activity_logs`  |
-| `.html` file links            | `.php` file links                           |
-| Tree recommendations static   | Loaded live from `tree_recommendations` table |
+│   └── index.php
+│
+├── api/
+│   ├── locations.php
+│   ├── recommendations.php
+│   └── simulate.php
+│
+├── assets/
+│   ├── css/
+│   │   ├── global.css          ← root style.css
+│   │   ├── admin.css           ← admin/style.css
+│   │   ├── login.css           ← auth/login-style.css
+│   │   ├── signup.css          ← auth/styles.css
+│   │   ├── management.css      ← management/style.css
+│   │   ├── about.css           ← WebApp/About/style.css
+│   │   ├── riskmap.css         ← WebApp/RiskMap/style.css
+│   │   └── seedlings.css       ← extracted from inline styles
+│   ├── js/
+│   │   ├── admin.js            ← admin/script.js
+│   │   ├── login.js            ← auth/login-script.js
+│   │   ├── signup.js           ← auth/script.js
+│   │   ├── management.js       ← management/script.js
+│   │   ├── services.js         ← WebApp/RiskMap/services.js
+│   │   └── seedlings.js        ← WebApp/Seedlings/seedlings.js
+│   ├── images/
+│   │   ├── logo.png            ← Photo logo/EcoProtean logo.png
+│   │   ├── background.jpg      ← Photo logo/background.jpg
+│   │   ├── exit.png            ← Photo logo/exit.png
+│   │   ├── person-icon.webp    ← WebApp/Photo logo/Person-Icon.webp
+│   │   └── seedlings/
+│   │       └── (your 10 images here)
+│   └── data/
+│       ├── services.json       ← WebApp/RiskMap/services.json
+│       └── seedlings.json      ← WebApp/Seedlings/seedlings.json
+│
+├── auth/
+│   ├── login.php
+│   ├── logout.php
+│   └── signup.php
+│
+├── config/
+│   └── config.php              ← root config.php (PHASE 2 security move)
+│
+├── db/
+│   └── database.sql            ← root database.sql (PHASE 2 security move)
+│
+├── management/
+│   └── index.php
+│
+├── webapp/
+│   ├── about/
+│   │   └── index.php
+│   ├── riskmap/
+│   │   └── index.php
+│   └── seedlings/
+│       └── index.html
+│
+├── .htaccess                   ← NEW (Phase 2 security)
+└── index.php
