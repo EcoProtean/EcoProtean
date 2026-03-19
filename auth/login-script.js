@@ -1,16 +1,13 @@
-const password = document.getElementById('password');
-const togglePassword = document.getElementById('togglePassword');
-const eyeIcon = document.getElementById('eyeIcon');
-const eyeSlashIcon = document.getElementById('eyeSlashIcon');
+document.addEventListener('DOMContentLoaded', function () {
+    const password = document.getElementById('password');
+    const togglePassword = document.getElementById('togglePassword');
+    const eyeSlash = document.getElementById('eyeSlash');
 
-// Toggle password visibility
-if (togglePassword) {
-    togglePassword.addEventListener('click', function() {
-        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-        password.setAttribute('type', type);
-        
-        // Toggle eye icons using class
-        eyeIcon.classList.toggle('hidden');
-        eyeSlashIcon.classList.toggle('hidden');
-    });
-}
+    if (togglePassword && password && eyeSlash) {
+        togglePassword.addEventListener('click', function () {
+            const isVisible = password.getAttribute('type') === 'text';
+            password.setAttribute('type', isVisible ? 'password' : 'text');
+            eyeSlash.style.display = isVisible ? 'none' : 'block';
+        });
+    }
+});
