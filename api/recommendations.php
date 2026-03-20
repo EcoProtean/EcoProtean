@@ -6,7 +6,7 @@
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 
-require_once dirname(__DIR__) . '/config.php';
+require_once dirname(__DIR__) . '/config/config.php';
 
 $location_id = isset($_GET['location_id']) ? (int)$_GET['location_id'] : 0;
 
