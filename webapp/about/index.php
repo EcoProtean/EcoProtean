@@ -31,7 +31,7 @@ if (!empty($_SESSION['user_id'])) {
         </div>
       </div>
       <ul>
-        <li><a class="active" href="../riskmap/index.php">Risk Map</a></li>
+        <li><a href="../riskmap/index.php">Risk Map</a></li>
         <li><a class="active" href="../about/">About</a></li>
         <?php if (!empty($_SESSION['user_id'])): ?>
           <li><a href="/{PREFIX}/auth/logout.php">Logout</a></li>
