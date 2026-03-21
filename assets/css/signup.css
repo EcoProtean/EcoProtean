@@ -11,15 +11,17 @@ body {
     min-height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: center;
-    padding: 20px;
+    align-items: flex-start;        /* was: center — flex-start allows scrolling */
+    padding: 70px 20px 40px;        /* was: 20px — top padding makes room for logo */
     position: relative;
-    overflow: hidden;
+    overflow-y: auto;               /* was: hidden — this was blocking all scroll */
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
 }
 
 body::before {
     content: '';
-    position: absolute;
+    position: fixed;                /* was: absolute — fixed keeps bg visible while scrolling */
     top: 0;
     left: 0;
     right: 0;
@@ -29,6 +31,7 @@ body::before {
         radial-gradient(circle at 80% 80%, rgba(129, 199, 132, 0.1) 0%, transparent 50%),
         radial-gradient(circle at 40% 20%, rgba(56, 142, 60, 0.1) 0%, transparent 50%);
     pointer-events: none;
+    z-index: 0;
 }
 
 .signup-container {
@@ -129,7 +132,7 @@ body::before {
     padding: 13px 16px;
     border: 2px solid #c8e6c9;
     border-radius: 10px;
-    font-size: 15px;
+    font-size: 16px;            /* 16px prevents iOS Safari zoom on focus */
     transition: all 0.3s;
     background: #f1f8f4;
     font-family: inherit;
@@ -201,20 +204,9 @@ body::before {
     border-radius: 2px;
 }
 
-.password-strength-bar.weak {
-    width: 33%;
-    background: #f44336;
-}
-
-.password-strength-bar.medium {
-    width: 66%;
-    background: #ff9800;
-}
-
-.password-strength-bar.strong {
-    width: 100%;
-    background: #4CAF50;
-}
+.password-strength-bar.weak   { width: 33%;  background: #f44336; }
+.password-strength-bar.medium { width: 66%;  background: #ff9800; }
+.password-strength-bar.strong { width: 100%; background: #4CAF50; }
 
 .terms-checkbox {
     display: flex;
@@ -289,13 +281,8 @@ body::before {
     background: #c8e6c9;
 }
 
-.divider::before {
-    left: 0;
-}
-
-.divider::after {
-    right: 0;
-}
+.divider::before { left: 0; }
+.divider::after  { right: 0; }
 
 .login-link {
     text-align: center;
@@ -315,17 +302,46 @@ body::before {
     text-decoration: underline;
 }
 
-@media (max-width: 580px) {
-    .signup-container {
-        padding: 30px 20px;
+/* ── Tablet (max 768px) — mirrors about.css breakpoint ── */
+@media (max-width: 768px) {
+    body {
+        padding: 65px 16px 40px;
     }
 
-    .signup-header h1 {
-        font-size: 28px;
+    .signup-header h1 { font-size: 28px; }
+    .signup-header p  { font-size: 14px; }
+
+    .signup-container {
+        padding: 40px 28px 30px;
     }
 
     .form-row {
         grid-template-columns: 1fr;
         gap: 0;
+    }
+}
+
+/* ── Mobile (max 580px) — mirrors about.css breakpoint ── */
+@media (max-width: 580px) {
+    body {
+        padding: 60px 12px 36px;
+    }
+
+    .signup-container {
+        padding: 36px 16px 24px;
+        border-radius: 14px;
+    }
+
+    .signup-header h1 { font-size: 24px; }
+    .signup-header p  { font-size: 13px; }
+
+    .form-group input,
+    .form-group select {
+        padding: 11px 13px;
+    }
+
+    .signup-button {
+        padding: 13px;
+        font-size: 15px;
     }
 }
