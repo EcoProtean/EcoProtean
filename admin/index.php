@@ -338,7 +338,7 @@ function riskColor(string $risk): string {
             <th style="width:20%">Status</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="adminSensorTbody">
           <?php foreach ($sensors_status as $s):
             $lvl = (int)($s['latest_level'] ?? 0);
             $status = $lvl >= 60 ? 'Critical' : ($lvl >= 30 ? 'Warning' : 'Normal');
@@ -552,35 +552,23 @@ document.addEventListener('DOMContentLoaded', function () {
   const avgLng = sensorLocations.reduce((s, l) => s + l.lng, 0) / sensorLocations.length;
 
   const map = L.map('sensorMap', { zoomControl: true, scrollWheelZoom: false }).setView([avgLat, avgLng], 13);
-  window._leafletMap = map;
+  window._leafletMap    = map;
+  window._adminMarkers  = {};
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap',
-    maxZoom: 12
+    maxZoom: 19
   }).addTo(map);
 
   const pinColors = { high: '#e74c3c', medium: '#e67e22', low: '#27ae60' };
 
   sensorLocations.forEach(loc => {
-    const color  = pinColors[loc.risk] || '#1b9e9b';
-    const status = loc.level >= 60 ? 'Critical' : loc.level >= 30 ? 'Warning' : 'Normal';
+    const color       = pinColors[loc.risk] || '#1b9e9b';
+    const status      = loc.level >= 60 ? 'Critical' : loc.level >= 30 ? 'Warning' : 'Normal';
     const statusColor = loc.level >= 60 ? '#e74c3c' : loc.level >= 30 ? '#e67e22' : '#27ae60';
 
-    const icon = L.divIcon({
-      className: '',
-      html: `<div style="
-        width:34px;height:34px;border-radius:50% 50% 50% 0;
-        background:${color};border:3px solid #fff;
-        transform:rotate(-45deg);
-        box-shadow:0 2px 8px rgba(0,0,0,0.25);
-      "></div>`,
-      iconSize: [34, 34],
-      iconAnchor: [17, 34],
-      popupAnchor: [0, -36]
-    });
-
     const popup = `
-      <div style="min-width:180px;">
+      <div style="min-width:180px;font-family:'Poppins',sans-serif;">
         <div class="popup-title">${loc.name}</div>
         <div class="popup-row">
           <span>Sensor #${loc.id}</span>
@@ -593,7 +581,17 @@ document.addEventListener('DOMContentLoaded', function () {
         <div class="popup-row" style="margin-top:5px;color:#888;font-size:0.72rem;">${loc.desc}</div>
       </div>`;
 
-    L.marker([loc.lat, loc.lng], { icon }).addTo(map).bindPopup(popup);
+    // Use circleMarker so we can call setStyle() to update color live
+    const marker = L.circleMarker([loc.lat, loc.lng], {
+      radius: 12,
+      color: color,
+      fillColor: color,
+      fillOpacity: 0.9,
+      weight: 3
+    }).addTo(map).bindPopup(popup);
+
+    // Store by location id for live updates
+    window._adminMarkers[loc.id] = marker;
 
     // Pulse circle for critical sensors
     if (loc.level >= 60) {
@@ -629,7 +627,7 @@ const datasets = Object.entries(sensorRaw).map(([key, hourMap], i) => {
   };
 });
 
-new Chart(document.getElementById('lineChart'), {
+window._lineChart = new Chart(document.getElementById('lineChart'), {
   type: 'line',
   data: { labels: chartHours.length ? chartHours : ['No data'], datasets },
   options: {
@@ -710,6 +708,129 @@ function updateClock() {
     days[d.getDay()] + ' · ' + d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
 }
 updateClock(); setInterval(updateClock, 1000);
+
+// ── Admin live sensor update every 5s ─────────
+(function adminLiveUpdate() {
+
+  const riskColorMap = { low:'#27ae60', medium:'#e67e22', high:'#e74c3c' };
+
+  function getRiskFromLevel(lvl) {
+    if (lvl >= 60) return 'high';
+    if (lvl >= 30) return 'medium';
+    return 'low';
+  }
+  function getStatusLabel(lvl) {
+    if (lvl >= 60) return ['Critical','sensor-critical'];
+    if (lvl >= 30) return ['Warning','sensor-warning'];
+    return ['Normal','sensor-normal'];
+  }
+
+  function fetchAndUpdate() {
+    fetch('../api/locations.php', { credentials: 'same-origin' })
+      .then(r => r.json())
+      .then(locations => {
+        if (!Array.isArray(locations) || locations.error) return;
+
+        // ── Update sensor status table ──
+        const tbody = document.getElementById('adminSensorTbody');
+        if (tbody) {
+          tbody.innerHTML = '';
+          locations.forEach(loc => {
+            const lvl   = loc.movement_level ?? 0;
+            const risk  = getRiskFromLevel(lvl);
+            const color = riskColorMap[risk];
+            const [statusLabel, statusClass] = getStatusLabel(lvl);
+            const riskCap = risk.charAt(0).toUpperCase() + risk.slice(1);
+            tbody.innerHTML += `
+              <tr>
+                <td>${loc.sensor_id}</td>
+                <td>${loc.name}</td>
+                <td style="font-weight:600;color:${color};">${lvl}</td>
+                <td><span class="badge ${risk}">${riskCap}</span></td>
+                <td><span class="sensor-status ${statusClass}">${statusLabel}</span></td>
+              </tr>`;
+          });
+        }
+
+        // ── Update map pins ──
+        if (window._leafletMap) {
+          locations.forEach(loc => {
+            const risk  = getRiskFromLevel(loc.movement_level ?? 0);
+            const color = riskColorMap[risk];
+            const lvl   = loc.movement_level ?? 0;
+            const [statusLabel] = getStatusLabel(lvl);
+
+            const popup = `
+              <div style="font-family:'Poppins',sans-serif;min-width:180px;">
+                <div class="popup-title">${loc.name}</div>
+                <div class="popup-row">
+                  <span>Sensor #${loc.sensor_id}</span>
+                  <span class="popup-badge ${risk}">${risk.charAt(0).toUpperCase()+risk.slice(1)} Risk</span>
+                </div>
+                <div class="popup-row">
+                  <span>Movement</span>
+                  <strong style="color:${color}">${lvl} — ${statusLabel}</strong>
+                </div>
+              </div>`;
+
+            if (window._adminMarkers && window._adminMarkers[loc.id]) {
+              window._adminMarkers[loc.id].setStyle({
+                fillColor: color,
+                color: color
+              });
+              window._adminMarkers[loc.id].setPopupContent(popup);
+            }
+          });
+        }
+
+        // ── Update critical alert banner ──
+        const critical = locations.filter(l => (l.movement_level ?? 0) >= 60);
+        const banner   = document.querySelector('.critical-banner, .all-clear');
+        if (banner) {
+          if (critical.length > 0) {
+            banner.className = 'critical-banner';
+            const chips = critical.map(l =>
+              `<span class="critical-chip">${l.name} · ${l.movement_level} · ${new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})}</span>`
+            ).join('');
+            banner.innerHTML = `<div class="pulse"></div><strong>Critical Alert</strong><div class="critical-chips">${chips}</div>`;
+          } else {
+            banner.className = 'all-clear';
+            banner.innerHTML = '✅ All clear — no critical sensor alerts in the last hour.';
+          }
+        }
+
+        // ── Update line chart with latest data point ──
+        if (window._lineChart && locations.length) {
+          const now = new Date().getHours().toString().padStart(2,'0') + ':00';
+          const labels = window._lineChart.data.labels;
+          if (labels[labels.length - 1] !== now) {
+            labels.push(now);
+            if (labels.length > 12) labels.shift();
+          }
+          locations.forEach((loc, i) => {
+            if (window._lineChart.data.datasets[i]) {
+              const ds   = window._lineChart.data.datasets[i];
+              const last = ds.data[ds.data.length - 1];
+              // Only push if value changed
+              if (last !== loc.movement_level) {
+                ds.data.push(loc.movement_level ?? 0);
+                if (ds.data.length > 12) ds.data.shift();
+              }
+            }
+          });
+          window._lineChart.update('none'); // 'none' = no animation for live update
+        }
+      })
+      .catch(err => console.error('Admin live update failed:', err));
+  }
+
+  // Start after page loads
+  document.addEventListener('DOMContentLoaded', () => {
+    fetchAndUpdate();
+    setInterval(fetchAndUpdate, 5000);
+  });
+
+})();
 </script>
 
 <!-- ── Add sensor-status badge styles ── -->
