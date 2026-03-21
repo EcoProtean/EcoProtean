@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Initialize map centered on Manolo Fortich, Northern Mindanao, Philippines
   const map = L.map('map').setView([8.3644, 124.8669], 13);
+  window._riskmapLeaflet = map;
 
   // OpenStreetMap tiles
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -20,8 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
     maxZoom: 19
   }).addTo(map);
 
-  // Risk color mapping — matches DB ENUM: 'Low', 'Medium', 'High'
-  // (API normalizes to lowercase so we handle both)
+  // Risk color mapping
   const riskColors = {
     high:   '#e74c3c',
     medium: '#f39c12',
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function () {
           fillOpacity: 0.7
         }).addTo(map);
 
-        // Basic popup — shows immediately on click
+        //  added the button for requesting a data on that specific sensor ──
         const popupContent = `
           <div style="min-width:220px; font-family:'Poppins',sans-serif;">
             <h3 style="color:#2c5f5d; margin-bottom:8px; font-size:15px;">${area.name}</h3>
@@ -65,10 +65,32 @@ document.addEventListener('DOMContentLoaded', function () {
             <div id="rec-${area.id}" style="font-size:13px; color:#777;">
               <em>Loading recommendations…</em>
             </div>
+            <hr style="margin:10px 0; border-color:#eee;">
+
+            <button
+              style="
+                width: 100%;
+                padding: 9px 0;
+                background: #2c5f5d;
+                color: #fff;
+                border: none;
+                border-radius: 5px;
+                font-family: 'Poppins', sans-serif;
+                font-size: 13px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: background 0.2s;
+              "
+              onmouseover="this.style.background='#1b9e9b'"
+              onmouseout="this.style.background='#2c5f5d'"
+            >
+              🔬 Request Sensor Data
+            </button>
+
           </div>
         `;
 
-        marker.bindPopup(popupContent);
+        marker.bindPopup(popupContent, { maxWidth: 280 });
 
         // Load tree recommendations when popup opens
         marker.on('popupopen', () => {
