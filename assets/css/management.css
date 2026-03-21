@@ -370,3 +370,46 @@ input[readonly] { background:#f8f8f8; color:#999; cursor:default; }
   .card-value { font-size:1.7rem; }
   #map { height:200px; }
 }
+
+/* ── Sensor picker map ── */
+#sensorPickerMap {
+  height: 260px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid #e4ecea;
+  transition: border-color 0.25s;
+}
+#sensorPickerMap.picked {
+  border-color: #1b9e9b;
+}
+
+.map-hint {
+  font-size: 0.78rem;
+  color: #888;
+  margin-bottom: 10px;
+  background: #f7faf9;
+  padding: 8px 12px;
+  border-radius: 7px;
+  border-left: 3px solid #1b9e9b;
+}
+
+.geocode-status {
+  font-size: 0.78rem;
+  padding: 6px 10px;
+  border-radius: 6px;
+  margin-bottom: 4px;
+}
+.geocode-status.loading { background:#f0f4f3; color:#888; }
+.geocode-status.done    { background:#eafaf1; color:#1e8449; }
+.geocode-status.error   { background:#fdecea; color:#c0392b; }
+
+/* ── Sensor list preview ── */
+.sensor-list-preview {
+  background: #f7faf9;
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 38px;
+}
