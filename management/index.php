@@ -371,7 +371,7 @@ function levelColor(?float $lvl): string {
         <div class="section-header">
           <h2>➕ Add New Sensor</h2>
         </div>
-        <p class="map-hint">📍 Click anywhere on the map to set the sensor location. The name will auto-fill — you can edit it.</p>
+        <p class="map-hint">📍 Click anywhere on the map to set the sensor location.</p>
 
         <div id="sensorPickerMap"></div>
 
