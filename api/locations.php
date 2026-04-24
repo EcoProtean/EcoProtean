@@ -2,9 +2,6 @@
 // ─────────────────────────────────────────────
 //  API: GET /api/locations.php
 //  Returns all locations as JSON for the map.
-//
-//  Only the manager triggers simulation.
-//  Admin and user just read the latest data.
 // ─────────────────────────────────────────────
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
@@ -12,38 +9,33 @@ header('Access-Control-Allow-Origin: *');
 session_start();
 require_once dirname(__DIR__) . '/config/config.php';
 
-// ── Auth check ──
-if (empty($_SESSION['user_id'])) {
-    http_response_code(401);
-    echo json_encode(['error' => true, 'message' => 'Unauthorized']);
-    exit;
-}
+/* ── Public Access ──
+  We removed the session_id check here so the public 
+  can see the pins on the Risk Map without logging in.
+*/
 
-// ── Auto-simulate if 5s have passed since last insert ──
-// Any logged-in user can trigger this — whoever calls first
-// after 5s inserts new data. Everyone else reads the same row.
-$last = $conn->query("
-    SELECT TIMESTAMPDIFF(SECOND, MAX(timestamp), NOW()) AS seconds_ago
-    FROM simulation_data
-")->fetch_assoc()['seconds_ago'];
+// ── Auto-simulate logic ──
+$lastResult = $conn->query("SELECT TIMESTAMPDIFF(SECOND, MAX(timestamp), NOW()) AS seconds_ago FROM simulation_data");
+$last = $lastResult->fetch_assoc()['seconds_ago'];
 
-if ($last === null || $last >= 5) {
-    $sensors = $conn->query("SELECT sensor_id FROM sensors")->fetch_all(MYSQLI_ASSOC);
-    if (!empty($sensors)) {
-        $stmt = $conn->prepare(
-            "INSERT INTO simulation_data (sensor_id, movement_level) VALUES (?, ?)"
-        );
-        foreach ($sensors as $sensor) {
-            $movement = rand(0, 100);
-            $stmt->bind_param('ii', $sensor['sensor_id'], $movement);
-            $stmt->execute();
+// Only allow the database to update if a MANAGER is logged in 
+// This prevents random public visitors from spamming your database
+if (!empty($_SESSION['role']) && $_SESSION['role'] === 'manager') {
+    if ($last === null || $last >= 5) {
+        $sensors = $conn->query("SELECT sensor_id FROM sensors")->fetch_all(MYSQLI_ASSOC);
+        if (!empty($sensors)) {
+            $stmt = $conn->prepare("INSERT INTO simulation_data (sensor_id, movement_level) VALUES (?, ?)");
+            foreach ($sensors as $sensor) {
+                $movement = rand(0, 100);
+                $stmt->bind_param('ii', $sensor['sensor_id'], $movement);
+                $stmt->execute();
+            }
+            $stmt->close();
         }
-        $stmt->close();
     }
 }
 
-// ── Fetch latest data per sensor ─────────────
-// Everyone reads the same latest row from DB
+// ── Fetch latest data per sensor (PUBLIC DATA) ─────────────
 $result = $conn->query(
     "SELECT
         l.location_id,
