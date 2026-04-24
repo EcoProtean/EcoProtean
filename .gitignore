@@ -1,0 +1,9 @@
+# Secrets and Credentials
+.env
+
+# Dependencies
+vendor/
+
+# OS metadata
+.DS_Store
+Thumbs.db

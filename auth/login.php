@@ -2,6 +2,34 @@
 session_start();
 require_once '../config/config.php';
 
+// --- Add this for Auth0 ---
+require_once '../vendor/autoload.php';
+
+use Dotenv\Dotenv;
+
+// This tells PHP to look one directory higher than the current 'auth' folder
+$dotenv = Dotenv::createImmutable(dirname(__DIR__)); 
+$dotenv->load();
+
+// Initialize the Google Client
+$client = new Google\Client();
+$client->setClientId($_ENV['GOOGLE_CLIENT_ID']);
+$client->setClientSecret($_ENV['GOOGLE_CLIENT_SECRET']);
+$client->setRedirectUri($_ENV['GOOGLE_REDIRECT_URL']);
+
+$client->addScope("email");
+$client->addScope("profile");
+
+
+$client->setPrompt('login select_account'); 
+
+$authUrl = $client->createAuthUrl();
+
+if (isset($_GET['google_login'])) {
+    header('Location: ' . filter_var($authUrl, FILTER_SANITIZE_URL));
+    exit;
+}
+
 $error = '';
 
 // Redirect if already logged in
@@ -139,6 +167,11 @@ $savedEmail = $_COOKIE['user_email'] ?? '';
         </form>
 
         <div class="divider">or</div>
+
+        <a href="login.php?google_login=1" class="google-login-btn">
+    <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" alt="Google" style="width:20px; margin-right:10px;">
+    Continue with Google
+</a>
 
         <div class="signup-link">
             Don't have an account? <a href="signup.php">Sign up</a>
