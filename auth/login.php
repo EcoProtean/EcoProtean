@@ -2,33 +2,7 @@
 session_start();
 require_once '../config/config.php';
 
-// --- Add this for Auth0 ---
-require_once '../vendor/autoload.php';
-
-use Dotenv\Dotenv;
-
-// This tells PHP to look one directory higher than the current 'auth' folder
-$dotenv = Dotenv::createImmutable(dirname(__DIR__)); 
-$dotenv->load();
-
-// Initialize the Google Client
-$client = new Google\Client();
-$client->setClientId($_ENV['GOOGLE_CLIENT_ID']);
-$client->setClientSecret($_ENV['GOOGLE_CLIENT_SECRET']);
-$client->setRedirectUri($_ENV['GOOGLE_REDIRECT_URL']);
-
-$client->addScope("email");
-$client->addScope("profile");
-
-
-$client->setPrompt('login select_account'); 
-
-$authUrl = $client->createAuthUrl();
-
-if (isset($_GET['google_login'])) {
-    header('Location: ' . filter_var($authUrl, FILTER_SANITIZE_URL));
-    exit;
-}
+// --- GOOGLE/AUTH0 LOGIC REMOVED FROM HERE ---
 
 $error = '';
 
@@ -65,14 +39,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['full_name'] = $user['first_name'] . ' ' . $user['last_name'];
 
             // Update last_login in the database
-            $stmt = $conn->prepare("UPDATE users SET last_login = NOW() WHERE user_id = ?");
-            $stmt->bind_param("i", $user['user_id']);
-            $stmt->execute();
-            $stmt->close();
+            $stmt_update = $conn->prepare("UPDATE users SET last_login = NOW() WHERE user_id = ?");
+            $stmt_update->bind_param("i", $user['user_id']);
+            $stmt_update->execute();
+            $stmt_update->close();
       
             // Handle "Remember me"
             if ($remember) {
-                // Set cookie for 30 days
                 setcookie('user_email', $email, time() + (30 * 24 * 60 * 60), '/');
             }
             
@@ -109,8 +82,7 @@ $savedEmail = $_COOKIE['user_email'] ?? '';
 <body>
     <div class="login-container">
         <div class="logo-container">
-            <!-- Insert your EPP logo here -->
-            <img src="../assets/images/logo.png">
+            <img src="../assets/images/logo.png" alt="EcoProtean Logo">
         </div>
         
         <div class="login-header">
@@ -147,9 +119,8 @@ $savedEmail = $_COOKIE['user_email'] ?? '';
                     >
                     <button type="button" class="toggle-password" id="togglePassword" aria-label="Toggle password visibility">
                         <svg id="eyeIcon" viewBox="0 0 24 24">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                            <line id="eyeSlash" x1="2" y1="2" x2="22" y2="22" style="display:none;"></line>
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" fill="none" stroke-width="2"></path>
+                            <circle cx="12" cy="12" r="3" stroke="currentColor" fill="none" stroke-width="2"></circle>
                         </svg>
                     </button>
                 </div>
@@ -165,13 +136,6 @@ $savedEmail = $_COOKIE['user_email'] ?? '';
 
             <button type="submit" class="login-button">Login</button>
         </form>
-
-        <div class="divider">or</div>
-
-        <a href="login.php?google_login=1" class="google-login-btn">
-    <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" alt="Google" style="width:20px; margin-right:10px;">
-    Continue with Google
-</a>
 
         <div class="signup-link">
             Don't have an account? <a href="signup.php">Sign up</a>

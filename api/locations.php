@@ -1,7 +1,8 @@
 <?php
 // ─────────────────────────────────────────────
 //  API: GET /api/locations.php
-//  Returns all locations as JSON for the map.
+//  Shared Data: All UIs see the same latest data.
+//  Self-Simulating: Any visitor triggers the update.
 // ─────────────────────────────────────────────
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
@@ -9,33 +10,33 @@ header('Access-Control-Allow-Origin: *');
 session_start();
 require_once dirname(__DIR__) . '/config/config.php';
 
-/* ── Public Access ──
-  We removed the session_id check here so the public 
-  can see the pins on the Risk Map without logging in.
-*/
+// ── 1. INDEPENDENT AUTO-SIMULATE ──
+// We check the time since the last sensor update.
+$timerQuery = $conn->query("SELECT TIMESTAMPDIFF(SECOND, MAX(timestamp), NOW()) AS seconds_ago FROM simulation_data");
+$timerRow = $timerQuery->fetch_assoc();
+$secondsSinceLast = $timerRow['seconds_ago'];
 
-// ── Auto-simulate logic ──
-$lastResult = $conn->query("SELECT TIMESTAMPDIFF(SECOND, MAX(timestamp), NOW()) AS seconds_ago FROM simulation_data");
-$last = $lastResult->fetch_assoc()['seconds_ago'];
-
-// Only allow the database to update if a MANAGER is logged in 
-// This prevents random public visitors from spamming your database
-if (!empty($_SESSION['role']) && $_SESSION['role'] === 'manager') {
-    if ($last === null || $last >= 5) {
-        $sensors = $conn->query("SELECT sensor_id FROM sensors")->fetch_all(MYSQLI_ASSOC);
-        if (!empty($sensors)) {
-            $stmt = $conn->prepare("INSERT INTO simulation_data (sensor_id, movement_level) VALUES (?, ?)");
-            foreach ($sensors as $sensor) {
-                $movement = rand(0, 100);
-                $stmt->bind_param('ii', $sensor['sensor_id'], $movement);
-                $stmt->execute();
-            }
-            $stmt->close();
+// REMOVED THE ROLE CHECK:
+// Now, the "EcoProtean" system simulates itself regardless of who is watching.
+// If 5 seconds passed, the FIRST person to load the map (Guest or Admin) 
+// triggers the new data for EVERYONE.
+if ($secondsSinceLast === null || $secondsSinceLast >= 5) {
+    $sensors = $conn->query("SELECT sensor_id FROM sensors")->fetch_all(MYSQLI_ASSOC);
+    
+    if (!empty($sensors)) {
+        $stmt = $conn->prepare("INSERT INTO simulation_data (sensor_id, movement_level) VALUES (?, ?)");
+        foreach ($sensors as $sensor) {
+            // Shared random values generated once every 5 seconds
+            $movement = rand(0, 100); 
+            $stmt->bind_param('ii', $sensor['sensor_id'], $movement);
+            $stmt->execute();
         }
+        $stmt->close();
     }
 }
 
-// ── Fetch latest data per sensor (PUBLIC DATA) ─────────────
+// ── 2. SHARED DATA FETCH ──
+// Everyone (Public, Admin, Manager) runs this same query to see the same "Shared Reality"
 $result = $conn->query(
     "SELECT
         l.location_id,
