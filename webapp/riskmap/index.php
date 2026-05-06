@@ -31,8 +31,8 @@ if (!empty($_SESSION['user_id'])) {
         </div>
       </div>
       <ul>
-        <li><a class="active" href="../riskMap/index.php">Risk Map</a></li>
-        <li><a href="../about/index.php">About</a></li>
+        <li><a class="active" href="/ecoprotean/webapp/riskmap/index.php">Risk Map</a></li>
+        <li><a href="/ecoprotean/webapp/about/index.php">About</a></li>
         <?php if (!empty($_SESSION['role']) && in_array($_SESSION['role'], ['admin','manager'])): ?>
           <li><a href="/ecoprotean/admin/index.php">Admin</a></li>
         <?php endif; ?>
@@ -63,12 +63,30 @@ if (!empty($_SESSION['user_id'])) {
     <div id="map"></div>
   </div>
 
+  <!-- ── Login Modal (shown to guests if they somehow reach this page) ── -->
+  <div id="loginModal" class="eco-modal-overlay" style="display:none;">
+    <div class="eco-modal">
+      <button class="eco-modal-close" id="modalClose">&times;</button>
+      <div class="eco-modal-icon">🔒</div>
+      <h2>You are not logged in</h2>
+      <p>Do you want to login to view sensor data and recommendations?</p>
+      <div class="eco-modal-actions">
+        <a href="/ecoprotean/auth/login.php" class="eco-modal-btn primary">Yes, Login</a>
+        <button class="eco-modal-btn secondary" id="modalCancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ── Footer ── -->
   <footer>
     <p>&copy; 2025 EcoProtean | Environmental Monitoring System</p>
     <p><a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
   </footer>
 
+  <script>
+    window.ecoUser      = { loggedIn: <?php echo !empty($_SESSION['user_id']) ? 'true' : 'false'; ?> };
+    window.ecoMapConfig = { apiBase: '/ecoprotean/api' };
+  </script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="../../assets/js/riskmap.js"></script>
 </body>

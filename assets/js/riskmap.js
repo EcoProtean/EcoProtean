@@ -1,7 +1,9 @@
 // ─────────────────────────────────────────────
-//  EcoProtean — Risk Map (User Side)
-//  Fetches live sensor data from API every 10s
-//  and updates map pins, popups, and status bar
+//  EcoProtean — Risk Map
+//  Works for both public (index.php) and
+//  authenticated (webapp/riskmap/index.php)
+//  Guest clicks "Request Sensor Data" → modal
+//  Logged-in → button works normally
 // ─────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -12,6 +14,9 @@ document.addEventListener('DOMContentLoaded', function () {
     return;
   }
 
+  const isLoggedIn = window.ecoUser?.loggedIn ?? false;
+  const apiBase    = window.ecoMapConfig?.apiBase ?? '/ecoprotean/api';
+
   // ── Initialize map ─────────────────────────
   const map = L.map('map', { zoomControl: true }).setView([8.3644, 124.8669], 13);
   window._riskmapLeaflet = map;
@@ -21,15 +26,13 @@ document.addEventListener('DOMContentLoaded', function () {
     maxZoom: 19
   }).addTo(map);
 
-  // ── Risk color map ─────────────────────────
-  // Matches exactly what admin and manager use
+  // ── Risk colors & labels ───────────────────
   const riskColors = {
-    high:   '#e74c3c',  // red
-    medium: '#e67e22',  // orange
-    low:    '#27ae60'   // green — matches admin/manager
+    high:   '#e74c3c',
+    medium: '#e67e22',
+    low:    '#27ae60'
   };
 
-  // ── Risk label map ─────────────────────────
   const riskLabels = {
     high:   'High Risk',
     medium: 'Medium Risk',
@@ -55,45 +58,47 @@ document.addEventListener('DOMContentLoaded', function () {
             <span class="eco-risk-badge ${area.risk}">${riskLbl}</span>
             ${mvmt}
           </div>
-        </div>
-        <div class="eco-popup-body">
-          <p class="eco-popup-desc">${area.description || ''}</p>
-          <div id="rec-${area.id}" class="eco-popup-recs">
-            <em>Loading recommendations…</em>
-          </div>
-        </div>
         <div class="eco-popup-footer">
-          <button class="eco-btn-sensor">🔬 Request Sensor Data</button>
+          <button class="eco-btn-sensor" data-area-id="${area.id}">🔬 Request Sensor Data</button>
         </div>
       </div>`;
   }
 
-  // ── Load tree recommendations on popup open ─
-  function loadRecommendations(areaId) {
-    fetch(`../../api/recommendations.php?location_id=${areaId}`, {
-      credentials: 'same-origin'
-    })
-    .then(r => r.json())
-    .then(recs => {
-      const el = document.getElementById(`rec-${areaId}`);
-      if (!el) return;
-      if (!recs || recs.length === 0) {
-        el.innerHTML = '<em>No tree recommendations yet.</em>';
-        return;
-      }
-      let html = `<div class="eco-popup-recs-title">🌱 Recommended Trees</div>`;
-      recs.forEach(r => {
-        html += `<div class="eco-rec-item">
-          <strong>${r.tree_name}</strong> — ${r.reason}
-        </div>`;
-      });
-      el.innerHTML = html;
-    })
-    .catch(() => {
-      const el = document.getElementById(`rec-${areaId}`);
-      if (el) el.innerHTML = '<em style="color:#c0392b;">Could not load recommendations.</em>';
+
+  // ── Modal logic ────────────────────────────
+  const loginModal  = document.getElementById('loginModal');
+  const modalClose  = document.getElementById('modalClose');
+  const modalCancel = document.getElementById('modalCancel');
+
+  function showLoginModal() {
+    if (loginModal) loginModal.style.display = 'flex';
+  }
+
+  function hideLoginModal() {
+    if (loginModal) loginModal.style.display = 'none';
+  }
+
+  if (modalClose)  modalClose.addEventListener('click', hideLoginModal);
+  if (modalCancel) modalCancel.addEventListener('click', hideLoginModal);
+  if (loginModal) {
+    loginModal.addEventListener('click', function (e) {
+      if (e.target === loginModal) hideLoginModal();
     });
   }
+
+  // ── Sensor button handler (delegated) ──────
+  // Using event delegation on the map container
+  // because popups are re-created on each update
+  document.addEventListener('click', function (e) {
+    if (!e.target.classList.contains('eco-btn-sensor')) return;
+    if (!isLoggedIn) {
+      showLoginModal();
+    } else {
+      const areaId = e.target.getAttribute('data-area-id');
+      // TODO: your existing sensor data request logic here
+      console.log('[RiskMap] Requesting sensor data for area:', areaId);
+    }
+  });
 
   // ── Update status bar ──────────────────────
   function updateStatusBar(locations) {
@@ -104,15 +109,11 @@ document.addEventListener('DOMContentLoaded', function () {
       if (r === 'high')   critical++;
     });
 
-    const total  = document.getElementById('statTotal');
-    const warn   = document.getElementById('statWarning');
-    const crit   = document.getElementById('statCritical');
-    const status = document.getElementById('mapStatus');
-
-    if (total)  total.textContent  = `${locations.length} sensor${locations.length !== 1 ? 's' : ''}`;
-    if (warn)   warn.textContent   = `${warning} warning`;
-    if (crit)   crit.textContent   = `${critical} critical`;
-    if (status) status.textContent = `Updated ${new Date().toLocaleTimeString()}`;
+    const el = (id) => document.getElementById(id);
+    if (el('statTotal'))    el('statTotal').textContent    = `${locations.length} sensor${locations.length !== 1 ? 's' : ''}`;
+    if (el('statWarning'))  el('statWarning').textContent  = `${warning} warning`;
+    if (el('statCritical')) el('statCritical').textContent = `${critical} critical`;
+    if (el('mapStatus'))    el('mapStatus').textContent    = `Updated ${new Date().toLocaleTimeString()}`;
   }
 
   // ── Place or update a marker ───────────────
@@ -138,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function () {
       markers[area.id] = marker;
     }
 
-    // Pulse ring for critical areas
+    // Pulse ring for high risk areas
     if (area.risk === 'high' && !markers['ring_' + area.id]) {
       markers['ring_' + area.id] = L.circle(area.coords, {
         color:       '#e74c3c',
@@ -151,10 +152,8 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // ── Fetch locations + update map ───────────
-  // User just reads — simulation is handled
-  // server-side only when manager fetches
   function fetchAndUpdate() {
-    fetch('../../api/locations.php', { credentials: 'same-origin' })
+    fetch(`${apiBase}/locations.php`, { credentials: 'same-origin' })
       .then(r => r.json())
       .then(locations => {
         if (!Array.isArray(locations) || locations.error) {
@@ -179,9 +178,9 @@ document.addEventListener('DOMContentLoaded', function () {
       const div = L.DomUtil.create('div', 'map-legend');
       div.innerHTML = `<h4>Risk Levels</h4>`;
       [
-        { key:'high',   label:'High Risk'   },
-        { key:'medium', label:'Medium Risk'  },
-        { key:'low',    label:'Low Risk'     },
+        { key: 'high',   label: 'High Risk'   },
+        { key: 'medium', label: 'Medium Risk'  },
+        { key: 'low',    label: 'Low Risk'     },
       ].forEach(({ key, label }) => {
         div.innerHTML += `
           <div class="legend-row">
@@ -198,8 +197,7 @@ document.addEventListener('DOMContentLoaded', function () {
   fetchAndUpdate();
   addLegend();
 
-  // Refresh every 2s — simulation inserts every 5s
-  // so polling at 2s means user sees new data almost instantly
+  // Refresh every 2s
   setInterval(fetchAndUpdate, 2000);
 
 });
