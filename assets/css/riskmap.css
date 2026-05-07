@@ -1,5 +1,5 @@
 /* ─────────────────────────────────────────
-   EcoProtean — Risk Map (User Side)
+   EcoProtean — Risk Map
    assets/css/riskmap.css
 ───────────────────────────────────────── */
 
@@ -158,7 +158,7 @@ nav ul li a.active { color: #1b9e9b; }
 
 /* ── Map container ──────────────────────── */
 .map-container {
-  margin-top: 116px; /* header 80px + statusbar ~36px */
+  margin-top: 116px;
   flex: 1;
   width: 100%;
   position: relative;
@@ -348,6 +348,98 @@ footer p {
   opacity: 0.88;
 }
 
+/* ── Login Modal ─────────────────────────── */
+.eco-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(3px);
+}
+
+.eco-modal {
+  background: #fff;
+  border-radius: 16px;
+  padding: 40px 36px 32px;
+  max-width: 380px;
+  width: 90%;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  animation: modalIn 0.2s ease;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.eco-modal-close {
+  position: absolute;
+  top: 14px; right: 16px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #aaa;
+  line-height: 1;
+  transition: color 0.2s;
+}
+.eco-modal-close:hover { color: #333; }
+
+.eco-modal-icon {
+  font-size: 2.8rem;
+  margin-bottom: 14px;
+}
+
+.eco-modal h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 10px;
+}
+
+.eco-modal p {
+  font-size: 0.88rem;
+  color: #666;
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.eco-modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.eco-modal-btn {
+  padding: 10px 28px;
+  border-radius: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 0.88rem;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+.eco-modal-btn:active { transform: scale(0.97); }
+
+.eco-modal-btn.primary {
+  background: #2c5f5d;
+  color: #fff;
+}
+.eco-modal-btn.primary:hover { background: #1b9e9b; }
+
+.eco-modal-btn.secondary {
+  background: #f0f0f0;
+  color: #333;
+}
+.eco-modal-btn.secondary:hover { background: #e0e0e0; }
+
 /* ── Responsive ─────────────────────────── */
 @media (max-width: 768px) {
   header { padding: 12px 20px; }
@@ -361,4 +453,7 @@ footer p {
 @media (max-width: 480px) {
   .statusbar-right { display: none; }
   nav ul { gap: 14px; }
+  .eco-modal { padding: 32px 20px 24px; }
+  .eco-modal-actions { flex-direction: column; }
+  .eco-modal-btn { width: 100%; text-align: center; }
 }

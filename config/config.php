@@ -39,7 +39,9 @@ function currentUser() {
     return $_SESSION ?? [];
 }
 
-// Log an action to activity_logs
+// ─────────────────────────────────────────────
+//  Log an action to activity_logs
+// ─────────────────────────────────────────────
 function logActivity($conn, $user_id, $action, $description) {
     $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
     $stmt = $conn->prepare(
@@ -48,5 +50,24 @@ function logActivity($conn, $user_id, $action, $description) {
     $stmt->bind_param('isss', $user_id, $action, $description, $ip);
     $stmt->execute();
     $stmt->close();
+}
+
+// ─────────────────────────────────────────────
+//  Generate a weighted random movement level
+//  50% chance low    (0–29)   → Normal
+//  30% chance medium (30–59)  → Warning
+//  20% chance high   (60–100) → Critical
+//  Used by both api/locations.php and 
+//  api/simulate.php to ensure consistency
+// ─────────────────────────────────────────────
+function generateMovement() {
+    $rand = rand(1, 100);
+    if ($rand <= 50) {
+        return rand(0, 29);    // Normal
+    } elseif ($rand <= 80) {
+        return rand(30, 59);   // Warning
+    } else {
+        return rand(60, 100);  // Critical
+    }
 }
 ?>
