@@ -197,7 +197,6 @@ document.addEventListener('DOMContentLoaded', function () {
   fetchAndUpdate();
   addLegend();
 
-  // Refresh every 2s
-  setInterval(fetchAndUpdate, 2000);
+setInterval(fetchAndUpdate, 5000);
 
 });
