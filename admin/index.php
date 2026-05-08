@@ -77,24 +77,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $success = "Location deleted.";
   }
 
-  if ($action === 'add_recommendation') {
-    $loc_id = (int)$_POST['location_id'];
-    $tree   = trim($_POST['tree_name']);
-    $reason = trim($_POST['reason']);
-    $rec_by = $_SESSION['user_id'];
-    $stmt = $conn->prepare("INSERT INTO tree_recommendations (location_id,tree_name,reason,recommended_by) VALUES (?,?,?,?)");
-    $stmt->bind_param('issi', $loc_id, $tree, $reason, $rec_by);
-    $stmt->execute(); $stmt->close();
-    logActivity($conn, $_SESSION['user_id'], 'ADD_RECOMMENDATION', "Added recommendation: $tree");
-    $success = "Tree recommendation added.";
-  }
 }
 
 // ── Fetch stat counts ──────────────────────────────────
 $total_locations = $conn->query("SELECT COUNT(*) AS c FROM locations")->fetch_assoc()['c'];
 $total_sensors   = $conn->query("SELECT COUNT(*) AS c FROM sensors")->fetch_assoc()['c'];
 $total_users     = $conn->query("SELECT COUNT(*) AS c FROM users")->fetch_assoc()['c'];
-$total_recs      = $conn->query("SELECT COUNT(*) AS c FROM tree_recommendations")->fetch_assoc()['c'];
 
 // ── Critical alerts ──
 $critical = $conn->query("
@@ -134,11 +122,6 @@ $risk_raw    = $conn->query("SELECT risk_level, COUNT(*) AS cnt FROM locations G
 $risk_labels = array_column($risk_raw, 'risk_level');
 $risk_counts = array_column($risk_raw, 'cnt');
 
-// ── Chart 3: top trees ──
-$tree_raw    = $conn->query("SELECT tree_name, COUNT(*) AS cnt FROM tree_recommendations GROUP BY tree_name ORDER BY cnt DESC LIMIT 6")->fetch_all(MYSQLI_ASSOC);
-$tree_labels = array_column($tree_raw, 'tree_name');
-$tree_counts = array_column($tree_raw, 'cnt');
-
 // ── Sensor status with latest reading + coordinates ──
 $sensors_status = $conn->query("
   SELECT s.sensor_id, l.location_name, l.risk_level,
@@ -148,16 +131,6 @@ $sensors_status = $conn->query("
           ORDER BY sd2.timestamp DESC LIMIT 1) AS latest_level
   FROM sensors s
   JOIN locations l ON s.location_id = l.location_id
-")->fetch_all(MYSQLI_ASSOC);
-
-// ── Recent recommendations ──
-$recommendations = $conn->query("
-  SELECT tr.tree_name, l.location_name, tr.created_at,
-         CONCAT(u.first_name,' ',u.last_name) AS recommended_by_name
-  FROM tree_recommendations tr
-  JOIN locations l ON tr.location_id = l.location_id
-  JOIN users u     ON tr.recommended_by = u.user_id
-  ORDER BY tr.created_at DESC LIMIT 5
 ")->fetch_all(MYSQLI_ASSOC);
 
 // ── Recent logs ──
@@ -226,7 +199,6 @@ function riskColor(string $risk): string {
       overflow: hidden;
       position: relative;
     }
-    /* custom leaflet marker popup */
     .leaflet-popup-content-wrapper {
       border-radius: 10px;
       font-family: 'Poppins', sans-serif;
@@ -317,7 +289,6 @@ function riskColor(string $risk): string {
     <div class="stat-card"><div class="num"><?= $total_locations ?></div><div class="label">📍 Locations</div></div>
     <div class="stat-card"><div class="num"><?= $total_sensors ?></div><div class="label">📡 Active Sensors</div></div>
     <div class="stat-card"><div class="num"><?= $total_users ?></div><div class="label">👥 Total Users</div></div>
-    <div class="stat-card"><div class="num"><?= $total_recs ?></div><div class="label">🌳 Recommendations</div></div>
   </div>
 
   <!-- ── ROW: Sensor Status + Map ── -->
@@ -405,54 +376,29 @@ function riskColor(string $risk): string {
     </div>
   </div>
 
-  <!-- ── ROW: Bar chart ── -->
+  <!-- ── Recent Activity ── -->
   <div class="section">
     <div class="section-header">
-      <h2>🌳 Top Recommended Trees</h2>
+      <h2>📋 Recent Activity</h2>
     </div>
-    <div class="chart-legend" id="barLegend"></div>
-    <div class="chart-wrap" style="height:140px;">
-      <canvas id="barChart"></canvas>
-    </div>
-  </div>
-
-  <!-- ── ROW: Recommendations + Activity ── -->
-  <div class="dash-row col-2">
-    <div class="section">
-      <div class="section-header">
-        <h2>🌿 Recent Recommendations</h2>
-      </div>
-      <table class="mini-table">
-        <thead><tr><th style="width:26%">Tree</th><th style="width:30%">Location</th><th style="width:26%">By</th><th style="width:18%">Date</th></tr></thead>
-        <tbody>
-          <?php foreach ($recommendations as $rec): ?>
-            <tr>
-              <td><strong><?= htmlspecialchars($rec['tree_name']) ?></strong></td>
-              <td><?= htmlspecialchars($rec['location_name']) ?></td>
-              <td><?= htmlspecialchars($rec['recommended_by_name']) ?></td>
-              <td class="ts"><?= date('M d', strtotime($rec['created_at'])) ?></td>
-            </tr>
-          <?php endforeach; ?>
-        </tbody>
-      </table>
-    </div>
-    <div class="section">
-      <div class="section-header">
-        <h2>📋 Recent Activity</h2>
-      </div>
-      <table class="mini-table">
-        <thead><tr><th style="width:30%">User</th><th style="width:44%">Action</th><th style="width:26%">Time</th></tr></thead>
-        <tbody>
-          <?php foreach ($logs as $log): ?>
-            <tr>
-              <td><?= htmlspecialchars($log['full_name']) ?></td>
-              <td><span class="action-tag <?= actionClass($log['action']) ?>"><?= htmlspecialchars($log['action']) ?></span></td>
-              <td class="ts"><?= date('M d H:i', strtotime($log['created_at'])) ?></td>
-            </tr>
-          <?php endforeach; ?>
-        </tbody>
-      </table>
-    </div>
+    <table class="mini-table">
+      <thead>
+        <tr>
+          <th style="width:30%">User</th>
+          <th style="width:44%">Action</th>
+          <th style="width:26%">Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php foreach ($logs as $log): ?>
+          <tr>
+            <td><?= htmlspecialchars($log['full_name']) ?></td>
+            <td><span class="action-tag <?= actionClass($log['action']) ?>"><?= htmlspecialchars($log['action']) ?></span></td>
+            <td class="ts"><?= date('M d H:i', strtotime($log['created_at'])) ?></td>
+          </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
   </div>
 
   </div><!-- end #view-dashboard -->
@@ -581,7 +527,6 @@ document.addEventListener('DOMContentLoaded', function () {
         <div class="popup-row" style="margin-top:5px;color:#888;font-size:0.72rem;">${loc.desc}</div>
       </div>`;
 
-    // Use circleMarker so we can call setStyle() to update color live
     const marker = L.circleMarker([loc.lat, loc.lng], {
       radius: 12,
       color: color,
@@ -590,10 +535,8 @@ document.addEventListener('DOMContentLoaded', function () {
       weight: 3
     }).addTo(map).bindPopup(popup);
 
-    // Store by location id for live updates
     window._adminMarkers[loc.id] = marker;
 
-    // Pulse circle for critical sensors
     if (loc.level >= 60) {
       L.circle([loc.lat, loc.lng], {
         color: '#e74c3c', fillColor: '#e74c3c',
@@ -616,7 +559,6 @@ const sensorRaw  = <?= json_encode($sensor_data) ?>;
 
 const datasets = Object.entries(sensorRaw).map(([key, hourMap], i) => {
   const [, name] = key.split('|');
-  // legend goes BELOW the chart now — appended after chart renders
   return {
     label: name,
     data: chartHours.map(h => hourMap[h] ?? null),
@@ -649,7 +591,6 @@ datasets.forEach((ds, i) => {
 });
 
 // ── Doughnut chart ──────────────────────────
-// Color map keyed by risk label to ensure correct color regardless of DB order
 const riskColorMap = { 'Low':'#27ae60', 'Medium':'#e67e22', 'High':'#e74c3c' };
 const riskLabels = <?= json_encode($risk_labels) ?>;
 const riskCounts = <?= json_encode($risk_counts) ?>;
@@ -676,31 +617,7 @@ riskLabels.forEach((l, i) => {
   </span>`;
 });
 
-// ── Bar chart ───────────────────────────────
-const treeLabels = <?= json_encode($tree_labels) ?>;
-const treeCounts = <?= json_encode($tree_counts) ?>;
-const treeColors = ['rgba(27,158,155,.85)','rgba(44,95,93,.85)','rgba(39,174,96,.85)','rgba(52,152,219,.85)','rgba(230,126,34,.85)','rgba(155,89,182,.85)'];
-
-const barLeg = document.getElementById('barLegend');
-treeLabels.forEach((n, i) => {
-  barLeg.innerHTML += `<span class="legend-item">
-    <span class="legend-sq" style="background:${treeColors[i % treeColors.length]}"></span>${n} (${treeCounts[i]})
-  </span>`;
-});
-
-new Chart(document.getElementById('barChart'), {
-  type: 'bar',
-  data: { labels: treeLabels, datasets:[{ data: treeCounts, backgroundColor: treeColors, borderRadius: 6, borderSkipped: false }] },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    plugins: { legend: { display: false } },
-    scales: {
-      y: { beginAtZero:true, grid:{ color:'#f4f7f6' }, ticks:{ stepSize:1, font:{size:10} } },
-      x: { grid:{ display:false }, ticks:{ font:{size:10} } }
-    }
-  }
-});
-
+// ── Clock ───────────────────────────────────
 function updateClock() {
   const d = new Date();
   const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -709,7 +626,7 @@ function updateClock() {
 }
 updateClock(); setInterval(updateClock, 1000);
 
-// ── Admin live sensor update every 5s ─────────
+// ── Admin live sensor update every 5s ──────
 (function adminLiveUpdate() {
 
   const riskColorMap = { low:'#27ae60', medium:'#e67e22', high:'#e74c3c' };
@@ -774,10 +691,7 @@ updateClock(); setInterval(updateClock, 1000);
               </div>`;
 
             if (window._adminMarkers && window._adminMarkers[loc.id]) {
-              window._adminMarkers[loc.id].setStyle({
-                fillColor: color,
-                color: color
-              });
+              window._adminMarkers[loc.id].setStyle({ fillColor: color, color: color });
               window._adminMarkers[loc.id].setPopupContent(popup);
             }
           });
@@ -811,20 +725,18 @@ updateClock(); setInterval(updateClock, 1000);
             if (window._lineChart.data.datasets[i]) {
               const ds   = window._lineChart.data.datasets[i];
               const last = ds.data[ds.data.length - 1];
-              // Only push if value changed
               if (last !== loc.movement_level) {
                 ds.data.push(loc.movement_level ?? 0);
                 if (ds.data.length > 12) ds.data.shift();
               }
             }
           });
-          window._lineChart.update('none'); // 'none' = no animation for live update
+          window._lineChart.update('none');
         }
       })
       .catch(err => console.error('Admin live update failed:', err));
   }
 
-  // Start after page loads
   document.addEventListener('DOMContentLoaded', () => {
     fetchAndUpdate();
     setInterval(fetchAndUpdate, 5000);
@@ -833,7 +745,7 @@ updateClock(); setInterval(updateClock, 1000);
 })();
 </script>
 
-<!-- ── Add sensor-status badge styles ── -->
+<!-- ── Sensor status badge styles ── -->
 <style>
 .sensor-status {
   display: inline-block;
@@ -930,23 +842,19 @@ updateClock(); setInterval(updateClock, 1000);
 
 <!-- ── View switching ── -->
 <script>
-// On page load — if a POST just happened for user management, stay on that view
 const lastAction = '<?= htmlspecialchars($_POST['action'] ?? '') ?>';
 const userActions = ['add_user','edit_user','delete_user'];
 if (userActions.includes(lastAction)) {
   showView('usermanagement');
-} 
+}
 
 function showView(view) {
-  // toggle views
   document.getElementById('view-dashboard').style.display      = view === 'dashboard'      ? '' : 'none';
   document.getElementById('view-usermanagement').style.display = view === 'usermanagement' ? '' : 'none';
 
-  // toggle active nav
   document.getElementById('nav-dashboard').classList.toggle('active',      view === 'dashboard');
   document.getElementById('nav-usermanagement').classList.toggle('active', view === 'usermanagement');
 
-  // update page title
   document.getElementById('pageTitle').textContent =
     view === 'dashboard' ? 'Dashboard' : 'User Management';
   document.getElementById('pageWelcome').textContent =
@@ -954,7 +862,6 @@ function showView(view) {
       ? 'Welcome back, <?= htmlspecialchars($_SESSION['full_name']) ?> · <?= ucfirst($_SESSION['role']) ?>'
       : 'Manage system accounts and roles';
 
-  // invalidate Leaflet map size when switching back to dashboard
   if (view === 'dashboard' && window._leafletMap) {
     setTimeout(() => window._leafletMap.invalidateSize(), 100);
   }

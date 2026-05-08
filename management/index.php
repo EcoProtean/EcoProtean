@@ -67,29 +67,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $return_view = 'sensors';
   }
 
-  // Add recommendation
-  if ($action === 'add_recommendation') {
-    $loc_id = (int)$_POST['location_id'];
-    $tree   = trim($_POST['tree_name']);
-    $reason = trim($_POST['reason']);
-    $rec_by = $_SESSION['user_id'];
-    $stmt   = $conn->prepare("INSERT INTO tree_recommendations (location_id, tree_name, reason, recommended_by) VALUES (?,?,?,?)");
-    $stmt->bind_param('issi', $loc_id, $tree, $reason, $rec_by);
-    $stmt->execute(); $stmt->close();
-    logActivity($conn, $_SESSION['user_id'], 'ADD_RECOMMENDATION', "Added recommendation: $tree");
-    $success = "Tree recommendation added.";
-    $return_view = 'recommendations';
-  }
-
-  // Delete recommendation
-  if ($action === 'delete_recommendation') {
-    $id = (int)$_POST['recommendation_id'];
-    $stmt = $conn->prepare("DELETE FROM tree_recommendations WHERE recommendation_id=?");
-    $stmt->bind_param('i', $id); $stmt->execute(); $stmt->close();
-    logActivity($conn, $_SESSION['user_id'], 'DELETE_RECOMMENDATION', "Deleted recommendation ID: $id");
-    $success = "Recommendation deleted.";
-    $return_view = 'recommendations';
-  }
 }
 
 // ── Fetch data ─────────────────────────────────
@@ -135,45 +112,11 @@ $sensors_list = $conn->query("
   ORDER BY s.sensor_id ASC
 ")->fetch_all(MYSQLI_ASSOC);
 
-// Recommendations
-$recommendations = $conn->query("
-  SELECT tr.*, l.location_name, l.location_id,
-         CONCAT(u.first_name,' ',u.last_name) AS rec_by_name
-  FROM tree_recommendations tr
-  JOIN locations l ON tr.location_id = l.location_id
-  JOIN users u     ON tr.recommended_by = u.user_id
-  ORDER BY tr.created_at DESC
-")->fetch_all(MYSQLI_ASSOC);
-
-// Locations dropdown for recommendations
-$locations_dropdown = $conn->query("
-  SELECT l.location_id, l.location_name, s.sensor_id, s.sensor_type
-  FROM locations l
-  LEFT JOIN sensors s ON s.location_id = l.location_id
-  ORDER BY l.location_name ASC
-")->fetch_all(MYSQLI_ASSOC);
-
-// Group sensors by location for recommendation auto-fill
-$sensors_by_location = [];
-foreach ($locations_dropdown as $row) {
-  if ($row['sensor_id']) {
-    $sensors_by_location[$row['location_id']][] = [
-      'sensor_id'   => $row['sensor_id'],
-      'sensor_type' => $row['sensor_type'],
-    ];
-  }
-}
-$unique_locations = [];
-$seen = [];
-foreach ($locations_dropdown as $row) {
-  if (!in_array($row['location_id'], $seen)) {
-    $unique_locations[] = ['location_id' => $row['location_id'], 'location_name' => $row['location_name']];
-    $seen[] = $row['location_id'];
-  }
-}
-
 // All locations with coords for JS
-$all_locations_js = $conn->query("SELECT location_id, location_name, latitude, longitude FROM locations")->fetch_all(MYSQLI_ASSOC);
+$all_locations_js = $conn->query("
+  SELECT location_id, location_name, latitude, longitude
+  FROM locations
+")->fetch_all(MYSQLI_ASSOC);
 
 // ── Helpers ────────────────────────────────────
 function riskFromLevel(?float $lvl): string {
@@ -214,9 +157,8 @@ function levelColor(?float $lvl): string {
   </div>
   <div class="nav-section">Menu</div>
   <nav class="sidenav">
-    <a href="#" id="nav-dashboard"       onclick="showView('dashboard')"       class="active">📊 Dashboard</a>
-    <a href="#" id="nav-sensors"         onclick="showView('sensors')">📡 Sensors</a>
-    <a href="#" id="nav-recommendations" onclick="showView('recommendations')">🌳 Recommendations</a>
+    <a href="#" id="nav-dashboard" onclick="showView('dashboard')" class="active">📊 Dashboard</a>
+    <a href="#" id="nav-sensors"   onclick="showView('sensors')">📡 Sensors</a>
   </nav>
   <div class="sidebar-footer">
     <div class="user-info">
@@ -232,7 +174,7 @@ function levelColor(?float $lvl): string {
   <div class="topbar">
     <div>
       <div class="page-title" id="pageTitle">Dashboard</div>
-      <div class="page-sub"   id="pageSub">Tree Monitoring — Live Data</div>
+      <div class="page-sub"   id="pageSub">Sensor Monitoring — Live Data</div>
     </div>
     <div class="live-indicator">
       <span class="live-dot"></span>
@@ -459,88 +401,10 @@ function levelColor(?float $lvl): string {
     </div>
   </div><!-- end #view-sensors -->
 
-  <!-- ════════════════════════════════════ -->
-  <!-- VIEW: RECOMMENDATIONS              -->
-  <!-- ════════════════════════════════════ -->
-  <div id="view-recommendations" style="display:none;">
-
-    <div class="two-col">
-
-      <div class="section-box">
-        <div class="section-header"><h2>➕ Add Recommendation</h2></div>
-        <form method="POST">
-          <input type="hidden" name="action" value="add_recommendation">
-          <div class="form-group">
-            <label>Location</label>
-            <select name="location_id" required onchange="loadSensorsForLocation(this.value)">
-              <option value="">— Select location —</option>
-              <?php foreach ($unique_locations as $loc): ?>
-                <option value="<?= $loc['location_id'] ?>"><?= htmlspecialchars($loc['location_name']) ?></option>
-              <?php endforeach; ?>
-            </select>
-          </div>
-
-          <div class="form-group" id="sensorsForLocGroup" style="display:none;">
-            <label>Sensors at this location</label>
-            <div id="sensorsForLocList" class="sensor-list-preview"></div>
-          </div>
-
-          <div class="form-group">
-            <label>Tree Name</label>
-            <input type="text" name="tree_name" required placeholder="e.g. Narra, Bamboo, Acacia">
-          </div>
-          <div class="form-group">
-            <label>Reason</label>
-            <textarea name="reason" rows="4" required placeholder="Why is this tree recommended for this location?"></textarea>
-          </div>
-          <div style="margin-top:14px;">
-            <button type="submit" class="btn">Add Recommendation</button>
-          </div>
-        </form>
-      </div>
-
-      <div class="section-box">
-        <div class="section-header">
-          <h2>🌳 All Recommendations</h2>
-          <span class="muted-text"><?= count($recommendations) ?> total</span>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr><th>Tree</th><th>Location</th><th>By</th><th>Date</th><th>Action</th></tr>
-            </thead>
-            <tbody>
-              <?php foreach ($recommendations as $rec): ?>
-                <tr>
-                  <td>
-                    <strong><?= htmlspecialchars($rec['tree_name']) ?></strong>
-                    <div class="muted-text" style="font-size:0.72rem;"><?= htmlspecialchars(substr($rec['reason'],0,50)) ?>…</div>
-                  </td>
-                  <td><?= htmlspecialchars($rec['location_name']) ?></td>
-                  <td><?= htmlspecialchars($rec['rec_by_name']) ?></td>
-                  <td class="muted-text"><?= date('M d, Y', strtotime($rec['created_at'])) ?></td>
-                  <td>
-                    <form method="POST" onsubmit="return confirm('Delete this recommendation?')">
-                      <input type="hidden" name="action" value="delete_recommendation">
-                      <input type="hidden" name="recommendation_id" value="<?= $rec['recommendation_id'] ?>">
-                      <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                    </form>
-                  </td>
-                </tr>
-              <?php endforeach; ?>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-    </div>
-  </div><!-- end #view-recommendations -->
-
 </main>
 
 <script>
-const sensorsByLocation = <?= json_encode($sensors_by_location) ?>;
-const allLocations      = <?= json_encode(array_map(fn($l) => [
+const allLocations = <?= json_encode(array_map(fn($l) => [
   'id'   => (int)$l['location_id'],
   'name' => $l['location_name'],
   'lat'  => (float)$l['latitude'],
