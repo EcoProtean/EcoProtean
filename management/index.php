@@ -25,21 +25,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $desc        = trim($_POST['description']);
     $sensor_type = trim($_POST['sensor_type']);
 
-    // Insert location first
     $stmt = $conn->prepare("INSERT INTO locations (location_name, latitude, longitude, risk_level, description) VALUES (?,?,?,'Low',?)");
     $stmt->bind_param('sdds', $loc_name, $lat, $lng, $desc);
     $stmt->execute();
     $new_location_id = $conn->insert_id;
     $stmt->close();
 
-    // Insert sensor linked to new location
     $stmt = $conn->prepare("INSERT INTO sensors (location_id, sensor_type) VALUES (?,?)");
     $stmt->bind_param('is', $new_location_id, $sensor_type);
     $stmt->execute();
     $stmt->close();
 
     logActivity($conn, $_SESSION['user_id'], 'ADD_SENSOR', "Added sensor ($sensor_type) at $loc_name");
-    $success = "Sensor and location '$loc_name' added successfully. It will start simulating on the next tick.";
+    $success     = "Sensor and location '$loc_name' added successfully.";
     $return_view = 'sensors';
   }
 
@@ -51,7 +49,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $conn->prepare("DELETE FROM sensors WHERE sensor_id=?");
     $stmt->bind_param('i', $sensor_id); $stmt->execute(); $stmt->close();
 
-    // Only delete location if no other sensors use it
     $check = $conn->prepare("SELECT COUNT(*) AS c FROM sensors WHERE location_id=?");
     $check->bind_param('i', $loc_id); $check->execute();
     $cnt = $check->get_result()->fetch_assoc()['c'];
@@ -63,15 +60,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     logActivity($conn, $_SESSION['user_id'], 'DELETE_SENSOR', "Deleted sensor ID: $sensor_id");
-    $success = "Sensor deleted.";
+    $success     = "Sensor deleted.";
     $return_view = 'sensors';
   }
-
 }
 
 // ── Fetch data ─────────────────────────────────
 
-// Dashboard sensors
+$sensor_requests = $conn->query("
+  SELECT
+    sr.request_id, sr.location_id, sr.reason, sr.intended_use,
+    sr.date_range, sr.custom_from, sr.custom_to,
+    sr.fields, sr.interval_type, sr.format_pref,
+    sr.status, sr.rejection_remarks,
+    sr.requested_at, sr.reviewed_at,
+    l.location_name,
+    CONCAT(u.first_name, ' ', u.last_name) AS requester_name,
+    u.email AS requester_email,
+    CONCAT(rv.first_name, ' ', rv.last_name) AS reviewed_by_name
+  FROM sensor_requests sr
+  JOIN locations l  ON sr.location_id = l.location_id
+  JOIN users u      ON sr.user_id     = u.user_id
+  LEFT JOIN users rv ON sr.reviewed_by = rv.user_id
+  ORDER BY
+    CASE sr.status WHEN 'pending' THEN 0 WHEN 'approved' THEN 1 ELSE 2 END,
+    sr.requested_at DESC
+")->fetch_all(MYSQLI_ASSOC);
+
+$pending_count = count(array_filter($sensor_requests, fn($r) => $r['status'] === 'pending'));
+
 $sensors_dash = $conn->query("
   SELECT s.sensor_id, s.sensor_type, l.location_name, l.latitude, l.longitude,
          (SELECT sd.movement_level FROM simulation_data sd
@@ -90,17 +107,15 @@ foreach ($sensors_dash as $s) {
   if ($m >= 60) $critical++;
 }
 
-// Recent alerts
 $alerts = $conn->query("
   SELECT sd.movement_level, sd.timestamp, l.location_name, s.sensor_id
   FROM simulation_data sd
-  JOIN sensors s   ON sd.sensor_id   = s.sensor_id
-  JOIN locations l ON s.location_id  = l.location_id
+  JOIN sensors s   ON sd.sensor_id  = s.sensor_id
+  JOIN locations l ON s.location_id = l.location_id
   WHERE sd.movement_level >= 60
   ORDER BY sd.timestamp DESC LIMIT 8
 ")->fetch_all(MYSQLI_ASSOC);
 
-// Sensors list with location info
 $sensors_list = $conn->query("
   SELECT s.sensor_id, s.sensor_type, s.created_at,
          l.location_id, l.location_name, l.latitude, l.longitude, l.description,
@@ -112,13 +127,11 @@ $sensors_list = $conn->query("
   ORDER BY s.sensor_id ASC
 ")->fetch_all(MYSQLI_ASSOC);
 
-// All locations with coords for JS
 $all_locations_js = $conn->query("
   SELECT location_id, location_name, latitude, longitude
   FROM locations
 ")->fetch_all(MYSQLI_ASSOC);
 
-// ── Helpers ────────────────────────────────────
 function riskFromLevel(?float $lvl): string {
   if ($lvl === null || $lvl < 30) return 'low';
   if ($lvl < 60) return 'medium';
@@ -159,6 +172,12 @@ function levelColor(?float $lvl): string {
   <nav class="sidenav">
     <a href="#" id="nav-dashboard" onclick="showView('dashboard')" class="active">📊 Dashboard</a>
     <a href="#" id="nav-sensors"   onclick="showView('sensors')">📡 Sensors</a>
+    <a href="#" id="nav-requests"  onclick="showView('requests')">
+      📬 Sensor Requests
+      <?php if ($pending_count > 0): ?>
+        <span class="nav-badge" id="navRequestsBadge"><?= $pending_count ?></span>
+      <?php endif; ?>
+    </a>
   </nav>
   <div class="sidebar-footer">
     <div class="user-info">
@@ -189,11 +208,8 @@ function levelColor(?float $lvl): string {
     <div class="alert-msg error" id="errorMessage"><?= htmlspecialchars($error) ?></div>
   <?php endif; ?>
 
-  <!-- ════════════════════════════════════ -->
-  <!-- VIEW: DASHBOARD                     -->
-  <!-- ════════════════════════════════════ -->
+  <!-- VIEW: DASHBOARD -->
   <div id="view-dashboard">
-
     <div id="alertBanner" class="<?= $critical > 0 ? 'critical-banner' : 'all-clear' ?>">
       <?php if ($critical > 0): ?>
         <div class="pulse"></div>
@@ -298,28 +314,19 @@ function levelColor(?float $lvl): string {
         </table>
       </div>
     </div>
-
   </div><!-- end #view-dashboard -->
 
-  <!-- ════════════════════════════════════ -->
-  <!-- VIEW: SENSORS                       -->
-  <!-- ════════════════════════════════════ -->
+  <!-- VIEW: SENSORS -->
   <div id="view-sensors" style="display:none;">
-
     <div class="two-col">
-
-      <!-- Left: Add sensor + map -->
       <div class="section-box">
         <div class="section-header">
           <h2>➕ Add New Sensor</h2>
         </div>
         <p class="map-hint">📍 Click anywhere on the map to set the sensor location.</p>
-
         <div id="sensorPickerMap"></div>
-
         <form method="POST" style="margin-top:16px;">
           <input type="hidden" name="action" value="add_sensor_location">
-
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
             <div class="form-group">
               <label>Latitude</label>
@@ -330,24 +337,19 @@ function levelColor(?float $lvl): string {
               <input type="text" name="longitude" id="sensorLng" readonly required placeholder="Click map">
             </div>
           </div>
-
           <div class="form-group">
             <label>Location Name <span class="muted-text">(auto-filled, editable)</span></label>
             <input type="text" name="location_name" id="sensorLocName" required placeholder="Click the map first...">
           </div>
-
           <div class="form-group">
             <label>Sensor Type</label>
             <input type="text" name="sensor_type" required placeholder="e.g. Motion, Gyroscope, Vibration">
           </div>
-
           <div class="form-group">
             <label>Description</label>
             <textarea name="description" rows="3" required placeholder="Describe this monitoring site..."></textarea>
           </div>
-
           <div id="geocodeStatus" class="geocode-status" style="display:none;"></div>
-
           <div style="margin-top:14px;">
             <button type="submit" class="btn" id="addSensorBtn" disabled>Add Sensor</button>
             <span class="muted-text" style="margin-left:10px;font-size:0.75rem;" id="mapClickHint">Click the map to enable</span>
@@ -355,7 +357,6 @@ function levelColor(?float $lvl): string {
         </form>
       </div>
 
-      <!-- Right: Sensors list -->
       <div class="section-box">
         <div class="section-header">
           <h2>📡 All Sensors</h2>
@@ -397,9 +398,118 @@ function levelColor(?float $lvl): string {
           </table>
         </div>
       </div>
-
     </div>
   </div><!-- end #view-sensors -->
+
+  <!-- VIEW: SENSOR REQUESTS -->
+  <div id="view-requests" style="display:none;">
+    <div class="section-box">
+      <div class="section-header">
+        <h2>📬 Sensor Data Requests</h2>
+        <span class="muted-text">
+          <?= $pending_count ?> pending · <?= count($sensor_requests) ?> total
+        </span>
+      </div>
+
+      <?php if (empty($sensor_requests)): ?>
+        <div style="text-align:center;padding:40px;color:#aaa;font-size:0.9rem;">
+          No requests yet.
+        </div>
+      <?php else: ?>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Requester</th>
+                <th>Location</th>
+                <th>Reason</th>
+                <th>Data Preferences</th>
+                <th>Requested</th>
+                <th class="req-status-cell">Status</th>
+                <th class="req-action-cell">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php foreach ($sensor_requests as $r):
+                $isPending  = $r['status'] === 'pending';
+                $badgeClass = match($r['status']) {
+                  'approved' => 'risk-low',
+                  'rejected' => 'risk-high',
+                  default    => 'risk-medium'
+                };
+                $badgeIcon = match($r['status']) {
+                  'approved' => '✅',
+                  'rejected' => '❌',
+                  default    => '⏳'
+                };
+                // Encode full row for JS modal
+                $rowJson = htmlspecialchars(json_encode($r), ENT_QUOTES);
+              ?>
+                <tr data-request-id="<?= $r['request_id'] ?>">
+                  <td><span class="sensor-chip">#<?= $r['request_id'] ?></span></td>
+                  <td>
+                    <strong><?= htmlspecialchars($r['requester_name']) ?></strong>
+                    <div class="muted-text" style="font-size:0.7rem;">
+                      <?= htmlspecialchars($r['requester_email']) ?>
+                    </div>
+                  </td>
+                  <td><?= htmlspecialchars($r['location_name']) ?></td>
+                  <td>
+                    <div style="max-width:160px;font-size:0.8rem;color:#555;">
+                      <?= htmlspecialchars($r['reason']) ?>
+                    </div>
+                  </td>
+                  <td style="font-size:0.78rem;color:#555;">
+                    <?php
+                      $rangeMap = [
+                        'last_7_days'  => 'Last 7 days',
+                        'last_30_days' => 'Last 30 days',
+                        'last_90_days' => 'Last 90 days',
+                        'custom'       => ($r['custom_from'] ?? '?') . ' → ' . ($r['custom_to'] ?? '?'),
+                      ];
+                      $intMap = ['raw'=>'Every reading','hourly'=>'Hourly avg','daily'=>'Daily summary'];
+                    ?>
+                    <div>📅 <?= $rangeMap[$r['date_range']] ?? $r['date_range'] ?></div>
+                    <div>🕐 <?= $intMap[$r['interval_type']] ?? $r['interval_type'] ?></div>
+                  </td>
+                  <td class="muted-text" style="font-size:0.78rem;white-space:nowrap;">
+                    <?= date('M d, Y H:i', strtotime($r['requested_at'])) ?>
+                  </td>
+                  <td class="req-status-cell">
+                    <span class="risk-badge <?= $badgeClass ?>">
+                      <?= $badgeIcon ?> <?= ucfirst($r['status']) ?>
+                    </span>
+                    <?php if (!$isPending && $r['reviewed_by_name']): ?>
+                      <div class="muted-text" style="font-size:0.68rem;margin-top:3px;">
+                        by <?= htmlspecialchars($r['reviewed_by_name']) ?><br>
+                        <?= date('M d H:i', strtotime($r['reviewed_at'])) ?>
+                      </div>
+                    <?php endif; ?>
+                    <?php if ($r['status'] === 'rejected' && !empty($r['rejection_remarks'])): ?>
+                      <div style="font-size:0.7rem;color:#c0392b;margin-top:3px;font-style:italic;">
+                        "<?= htmlspecialchars($r['rejection_remarks']) ?>"
+                      </div>
+                    <?php endif; ?>
+                  </td>
+                  <td class="req-action-cell">
+                    <?php if ($isPending): ?>
+                      <button class="btn btn-sm"
+                        onclick="openReviewModal(<?= $rowJson ?>)">
+                        🔍 Review
+                      </button>
+                    <?php else: ?>
+                      <span class="muted-text" style="font-size:0.78rem;">Reviewed</span>
+                    <?php endif; ?>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
+            </tbody>
+          </table>
+        </div>
+      <?php endif; ?>
+    </div>
+  </div><!-- end #view-requests -->
 
 </main>
 
