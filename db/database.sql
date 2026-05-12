@@ -108,17 +108,45 @@ INSERT INTO simulation_data (sensor_id, movement_level) VALUES
 --  sensor data for a specific location.
 --  Must be approved by a manager before
 --  the user can view the sensor history.
+--
+--  Data selection fields (chosen by user
+--  during request, respected on delivery):
+--    date_range    — preset range or 'custom'
+--    custom_from   — start date if custom
+--    custom_to     — end date if custom
+--    fields        — comma-separated list of
+--                    requested data columns:
+--                    movement, risk, cause, timestamp
+--    interval_type — raw | hourly | daily
+--    format_pref   — view | download | both
+--
+--  Rejection:
+--    rejection_remarks — required when rejecting,
+--                        shown to the user in their
+--                        My Requests panel
 -- ─────────────────────────────────────────────
 CREATE TABLE sensor_requests (
-    request_id   INT AUTO_INCREMENT PRIMARY KEY,
-    user_id      INT  NOT NULL,
-    location_id  INT  NOT NULL,
-    reason       TEXT NOT NULL,
-    intended_use TEXT NOT NULL,
-    status       ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
-    requested_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    reviewed_at  DATETIME,
-    reviewed_by  INT,
+    request_id         INT AUTO_INCREMENT PRIMARY KEY,
+    user_id            INT  NOT NULL,
+    location_id        INT  NOT NULL,
+    reason             TEXT NOT NULL,
+    intended_use       TEXT NOT NULL,
+
+    -- Data selection preferences
+    date_range         VARCHAR(20)  NOT NULL DEFAULT 'last_30_days',
+    custom_from        DATE         DEFAULT NULL,
+    custom_to          DATE         DEFAULT NULL,
+    fields             VARCHAR(255) NOT NULL DEFAULT 'movement,risk,cause,timestamp',
+    interval_type      VARCHAR(20)  NOT NULL DEFAULT 'raw',
+    format_pref        VARCHAR(20)  NOT NULL DEFAULT 'both',
+
+    -- Review
+    status             ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    rejection_remarks  TEXT         DEFAULT NULL,
+    requested_at       DATETIME     DEFAULT CURRENT_TIMESTAMP,
+    reviewed_at        DATETIME     DEFAULT NULL,
+    reviewed_by        INT          DEFAULT NULL,
+
     FOREIGN KEY (user_id) REFERENCES users(user_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
@@ -149,13 +177,21 @@ JOIN users u ON al.user_id = u.user_id
 ORDER BY al.created_at DESC;
 
 -- Get all sensor requests with user and location info
+-- (includes new data selection and rejection fields)
 SELECT
     sr.request_id,
     CONCAT(u.first_name, ' ', u.last_name) AS requested_by,
     l.location_name,
     sr.reason,
     sr.intended_use,
+    sr.date_range,
+    sr.custom_from,
+    sr.custom_to,
+    sr.fields,
+    sr.interval_type,
+    sr.format_pref,
     sr.status,
+    sr.rejection_remarks,
     sr.requested_at,
     sr.reviewed_at,
     CONCAT(m.first_name, ' ', m.last_name) AS reviewed_by
@@ -186,3 +222,28 @@ JOIN simulation_data sd ON sd.sensor_id = s.sensor_id
         WHERE sensor_id = s.sensor_id
     )
 ORDER BY l.location_id ASC;
+
+-- Get sensor history for an approved request
+-- respecting the user's date_range and interval preferences
+-- (application layer handles interval aggregation;
+--  this query returns the raw filtered rows)
+SELECT
+    sd.sim_id,
+    sd.movement_level,
+    sd.timestamp,
+    CASE
+        WHEN sd.movement_level < 30 THEN 'low'
+        WHEN sd.movement_level < 60 THEN 'medium'
+        ELSE 'high'
+    END AS risk_level,
+    CASE
+        WHEN sd.movement_level < 30 THEN 'Wind'
+        WHEN sd.movement_level < 60 THEN 'Rain / Soil Softening'
+        ELSE 'Ground Instability'
+    END AS cause
+FROM simulation_data sd
+JOIN sensors s ON sd.sensor_id = s.sensor_id
+WHERE s.location_id = :location_id
+  AND sd.timestamp >= :date_from
+  AND sd.timestamp <= :date_to
+ORDER BY sd.timestamp DESC;
