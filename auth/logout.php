@@ -14,6 +14,6 @@ session_destroy();
 
 // 4. Redirect to the login page using a RELATIVE path
 // This is safer because it doesn't care if your folder is 'Ecoprotean' or 'ecoprotean'
-header("Location: login.php");
+header("Location: /ecoprotean/index.php");
 exit;
 ?>
